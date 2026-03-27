@@ -1,0 +1,326 @@
+/**
+ * ╔══════════════════════════════════════════════╗
+ * ║  STARLITH LABS · rofi · terminal mode        ║
+ * ║  Gentoo · Hyprland · void glass · compact    ║
+ * ╚══════════════════════════════════════════════╝
+ * ~/.config/rofi/themes/starlith-labs.rasi
+ */
+
+/* ── tokens ───────────────────────────────────── */
+* {
+    /* void */
+    c-bg:       #0a0710ff;
+    c-panel:    #0f0c1aff;
+    c-row-alt:  #ffffff08;
+    c-sel:      #1e1535ff;
+    c-border:   #2a1f4aff;
+    c-sel-line: #7353b2ff;
+
+    /* larry-the-cow purple */
+    c-lav:      #c1a1e1ff;
+    c-lav-dim:  #7353b2ff;
+    c-lav-pale: #d4b8f0ff;
+    c-core:     #a87dd4ff;
+    c-abyss:    #4e3480ff;
+
+    /* text */
+    c-text:     #d8cceeff;
+    c-dim:      #6b5a8aff;
+    c-ghost:    #3d3055ff;
+    c-bright:   #f0e8ffff;
+
+    /* state */
+    c-urgent:   #f38ba833;
+    c-active:   #7353b222;
+
+    /* hl literal — @ref not valid inside highlight */
+    hl-color:   #c1a1e1ff;
+
+    /* resets */
+    background-color: transparent;
+    text-color:       @c-text;
+    border-color:     @c-border;
+    spacing:          0;
+    padding:          0;
+    margin:           0;
+}
+
+/* ── window ───────────────────────────────────── */
+window {
+    transparency:  "real";
+    location:      north;
+    anchor:        north;
+    fullscreen:    false;
+    width:         560px;
+    x-offset:      0px;
+    y-offset:      60px;
+    font:          "JetBrainsMono Nerd Font 12";
+    background-color: @c-bg;
+    border:        1px solid;
+    border-color:  @c-border;
+    border-radius: 6px;
+    padding:       0px;
+    cursor:        default;
+}
+
+/* ── mainbox ──────────────────────────────────── */
+mainbox {
+    orientation:      vertical;
+    spacing:          0px;
+    padding:          0px;
+    background-color: transparent;
+    children:         [ inputbar, listview, mode-switcher ];
+}
+
+/* ── inputbar — the shell prompt ─────────────── */
+inputbar {
+    orientation:      horizontal;
+    spacing:          6px;
+    padding:          7px 10px;
+    background-color: @c-panel;
+    border:           0px 0px 1px 0px;
+    border-color:     @c-border;
+    children:         [ textbox-prompt, entry, num-filtered-rows, textbox-sep, num-rows ];
+}
+
+/* 󰣇 Gentoo glyph as the shell prompt marker */
+textbox-prompt {
+    expand:           false;
+    content:          "󰣇 ❯";
+    font:             "JetBrainsMono Nerd Font Bold 12";
+    text-color:       @c-lav-dim;
+    background-color: transparent;
+    vertical-align:   0.5;
+    horizontal-align: 0.0;
+    padding:          0px 4px 0px 0px;
+    text-outline:        true;
+    text-outline-width:  1.5;
+    text-outline-color:  #7353b244;
+}
+
+entry {
+    expand:               true;
+    background-color:     transparent;
+    text-color:           @c-bright;
+    font:                 "JetBrainsMono Nerd Font 12";
+    placeholder:          "type to search…";
+    placeholder-color:    @c-ghost;
+    cursor:               text;
+    vertical-align:       0.5;
+    blink:                true;
+    cursor-color:         @c-lav;
+    cursor-width:         2px;
+    cursor-outline:       false;
+    hide-cursor-on-empty: true;
+}
+
+num-filtered-rows {
+    expand:           false;
+    background-color: transparent;
+    text-color:       @c-lav-dim;
+    font:             "JetBrainsMono Nerd Font 10";
+    vertical-align:   0.5;
+    horizontal-align: 1.0;
+}
+
+textbox-sep {
+    expand:           false;
+    content:          "/";
+    font:             "JetBrainsMono Nerd Font 10";
+    text-color:       @c-ghost;
+    background-color: transparent;
+    vertical-align:   0.5;
+    horizontal-align: 0.5;
+}
+
+num-rows {
+    expand:           false;
+    background-color: transparent;
+    text-color:       @c-ghost;
+    font:             "JetBrainsMono Nerd Font 10";
+    vertical-align:   0.5;
+    horizontal-align: 0.0;
+}
+
+/* ── listview ─────────────────────────────────── */
+listview {
+    background-color: transparent;
+    padding:          4px 0px;
+    spacing:          0px;
+    lines:            8;
+    columns:          1;
+    fixed-height:     true;
+    dynamic:          false;
+    scrollbar:        true;
+    scrollbar-width:  3px;
+    cycle:            true;
+    reverse:          false;
+    layout:           vertical;
+    flow:             vertical;
+    fixed-columns:    true;
+    require-input:    false;
+}
+
+/* ── scrollbar ────────────────────────────────── */
+scrollbar {
+    background-color:       transparent;
+    handle-color:           @c-abyss;
+    handle-width:           3px;
+    border-color:           transparent;
+    handle-rounded-corners: true;
+    border-radius:          2px;
+    margin:                 2px 2px 2px 0px;
+    padding:                0px;
+}
+
+/* ── element ──────────────────────────────────── */
+element {
+    orientation:      horizontal;
+    spacing:          8px;
+    padding:          5px 10px;
+    border-radius:    0px;
+    border:           0px solid;
+    border-color:     transparent;
+    cursor:           pointer;
+    children:         [ element-icon, element-text ];
+}
+
+element normal.normal {
+    background-color: transparent;
+    border-color:     transparent;
+    text-color:       @c-text;
+}
+element normal.urgent {
+    background-color: @c-urgent;
+    border-color:     transparent;
+    text-color:       #f38ba8ff;
+}
+element normal.active {
+    background-color: @c-active;
+    border-color:     transparent;
+    text-color:       @c-lav;
+}
+
+element alternate.normal {
+    background-color: @c-row-alt;
+    border-color:     transparent;
+    text-color:       @c-dim;
+}
+element alternate.urgent {
+    background-color: @c-urgent;
+    border-color:     transparent;
+    text-color:       #f38ba8ff;
+}
+element alternate.active {
+    background-color: @c-active;
+    border-color:     transparent;
+    text-color:       @c-core;
+}
+
+/* selected — left accent bar via border-left only */
+element selected.normal {
+    background-color: @c-sel;
+    border:           0px 0px 0px 2px;
+    border-color:     @c-sel-line;
+    text-color:       @c-lav-pale;
+}
+element selected.urgent {
+    background-color: #3d1a1aff;
+    border:           0px 0px 0px 2px;
+    border-color:     #f38ba8ff;
+    text-color:       #ffccccff;
+}
+element selected.active {
+    background-color: @c-sel;
+    border:           0px 0px 0px 2px;
+    border-color:     @c-core;
+    text-color:       @c-lav-pale;
+}
+
+element-icon {
+    size:             16px;
+    background-color: transparent;
+    cursor:           inherit;
+    vertical-align:   0.5;
+    horizontal-align: 0.5;
+}
+
+element-text {
+    expand:           true;
+    background-color: transparent;
+    text-color:       inherit;
+    font:             "JetBrainsMono Nerd Font 12";
+    vertical-align:   0.5;
+    horizontal-align: 0.0;
+    cursor:           inherit;
+    highlight:        bold #c1a1e1ff;
+}
+
+/* ── mode-switcher — single tight strip ──────── */
+mode-switcher {
+    expand:           false;
+    orientation:      horizontal;
+    spacing:          0px;
+    background-color: @c-panel;
+    border:           1px 0px 0px 0px;
+    border-color:     @c-border;
+    padding:          0px;
+}
+
+button {
+    expand:           true;
+    background-color: transparent;
+    text-color:       @c-ghost;
+    font:             "JetBrainsMono Nerd Font 10";
+    border-radius:    0px;
+    border:           0px solid;
+    border-color:     transparent;
+    padding:          4px 0px;
+    cursor:           pointer;
+    vertical-align:   0.5;
+    horizontal-align: 0.5;
+}
+
+button selected {
+    background-color: transparent;
+    text-color:       @c-lav;
+    border:           0px 0px 2px 0px;
+    border-color:     @c-lav-dim;
+    text-outline:        true;
+    text-outline-width:  1.0;
+    text-outline-color:  #7353b233;
+}
+
+/* ── message ──────────────────────────────────── */
+message {
+    background-color: #3d1a1a66;
+    border:           0px 0px 1px 0px;
+    border-color:     #ff555533;
+    border-radius:    0px;
+    margin:           0px;
+    padding:          5px 10px;
+}
+
+textbox {
+    background-color: transparent;
+    text-color:       #ff9999ff;
+    font:             "JetBrainsMono Nerd Font 11";
+    vertical-align:   0.5;
+    horizontal-align: 0.0;
+    markup:           true;
+}
+
+/* ── overlay ──────────────────────────────────── */
+overlay {
+    background-color: transparent;
+}
+
+/* ── responsive ───────────────────────────────── */
+@media ( max-width: 700 ) {
+    window { width: 90%; }
+}
+@media ( max-width: 400 ) {
+    window  { width: 98%; y-offset: 20px; }
+    element-icon { enabled: false; }
+}
+

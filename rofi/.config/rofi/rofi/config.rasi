@@ -1,0 +1,78 @@
+/**
+ * ╔══════════════════════════════════════════════════════════════╗
+ * ║  S T A R L I T H   L A B S  —  rofi config.rasi             ║
+ * ║  Place at: ~/.config/rofi/config.rasi                        ║
+ * ╚══════════════════════════════════════════════════════════════╝
+ */
+
+@theme "starlith-labs"
+
+configuration {
+    modes:                "drun,run,window,filebrowser";
+
+    show-icons:           true;
+    icon-theme:           "Papirus-Dark";
+
+    matching:             "fuzzy";
+    tokenize:             true;
+    normalize-match:      true;
+
+    sort:                 true;
+    sorting-method:       "fzf";
+
+    case-smart:           true;
+    matching-negate-char: "-";
+
+    cycle:                true;
+    click-to-exit:        true;
+
+    disable-history:      false;
+    max-history-size:     30;
+
+    terminal:             "alacritty";
+    replace:              true;
+
+    drun {
+        display-name:        "󰣇  Apps";
+        parse-user:          true;
+        parse-system:        true;
+        drun-show-actions:   true;
+        drun-match-fields:   "name,generic,exec,categories,keywords";
+        drun-display-format: "{name} [<span weight='light' size='small'><i>({generic})</i></span>]";
+        fallback-icon:       "application-x-executable";
+    }
+
+    run {
+        display-name:  "  Run";
+        fallback-icon: "utilities-terminal";
+    }
+
+    window {
+        display-name:       "󰕰  Windows";
+        window-format:      "{w}  {c}  {t}";
+        hide-active-window: true;
+    }
+
+    filebrowser {
+        display-name:      "  Files";
+        directory:         "/home/starlith";
+        sorting-method:    "name";
+        directories-first: true;
+        show-hidden:       false;
+        cancel-returns-1:  true;
+        command:           "xdg-open";
+    }
+
+    entry {
+        max-history: 20;
+    }
+
+    inputchange {
+        action: "kb-row-first";
+    }
+
+    timeout {
+        delay:  60;
+        action: "kb-cancel";
+    }
+}

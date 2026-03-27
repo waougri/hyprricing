@@ -1,0 +1,187 @@
+local add = MiniDeps.add
+
+add({
+  source ='nvim-treesitter/nvim-treesitter',
+  checkout = 'master',
+  monitor = 'main',
+  hooks = { post_checkout = function() vim.cmd('TSUpdate') end},
+
+})
+
+require('nvim-treesitter.configs').setup({
+  ensure_installed = { 'lua', 'vimdoc' },
+  highlight = { enable = true },
+})
+
+add('williamboman/mason.nvim')
+
+
+add({
+  source = 'nvim-mini/mini.pairs',
+  checkout = 'stable'
+})
+require('mini.pairs').setup()
+
+add('nvim-mini/mini.surround')
+require('mini.surround').setup()
+
+add("karb94/neoscroll.nvim")
+require("neoscroll").setup()
+
+
+add('echasnovski/mini.animate')
+require('mini.animate').setup()
+
+add('echasnovski/mini.cursorword')
+require('mini.cursorword').setup()
+
+add('echasnovski/mini.indentscope')
+require('mini.indentscope').setup()
+
+add('echasnovski/mini.trailspace')
+require('mini.trailspace').setup()
+
+add('echasnovski/mini.colors')
+require('mini.colors').setup()
+
+add('echasnovski/mini.hipatterns')
+require('mini.hipatterns').setup()
+
+add('echasnovski/mini.hues')
+require('mini.hues').setup({
+  -- Dark background: A deep, rich purple
+  background = '#000000', -- The "Gentoo Purple"
+
+  -- Foreground: A light grey for contrast
+  foreground = '#d5c8e1', -- Light, slightly desaturated purple/grey
+
+  -- Optional: Accent color for things like numbers and keywords
+  accent = 'purple', -- Cyan provides the classic "matrix":w contrast with deep purple
+})
+
+add('echasnovski/mini.icons')
+require('mini.icons').setup()
+
+add('echasnovski/mini.map')
+require('mini.map').setup()
+
+add('echasnovski/mini.notify')
+require('mini.notify').setup()
+
+add('echasnovski/mini.starter')
+require('mini.starter').setup()
+
+add('echasnovski/mini.statusline')
+require('mini.statusline').setup()
+
+add('echasnovski/mini.tabline')
+require('mini.tabline').setup()
+
+add("nvim-mini/mini.files")
+require('mini.files').setup()
+
+
+
+add({
+  source = 'neovim/nvim-lspconfig',
+  depends = {'williamboman/mason.nvim'},
+})
+
+add({ source = 'mason-org/mason-lspconfig.nvim' })
+require("mason").setup()
+require("mason-lspconfig").setup({automatic_enable = true})
+
+
+vim.lsp.enable('pyright',{ cmd = {'/home/starlith/.npm-packages/bin/pyright'}})
+vim.lsp.enable('clangd',{ cmd = {'/usr/lib/llvm/22/bin/clangd'}})
+vim.lsp.enable('lua_ls', {cmd = {'/usr/bin/lua-language-server'}})
+vim.lsp.enable('rust-analyzer', {cmd = {'/home/starlith/.cargo/bin/rust-analyzer'}})
+
+MiniDeps.add({
+  source = "saghen/blink.cmp",
+  depends = { "rafamadriz/friendly-snippets" },
+  checkout = "main", -- check releases for latest tag
+})
+
+require('blink.cmp').setup({
+  keymap = { preset = 'enter' },
+  appearance = {
+    nerd_font_variant = 'mono',
+  },
+  sources = {
+    default = { 'lsp', 'path', 'snippets', 'buffer' },
+  },
+  signature = {enabled = true},
+  fuzzy = { implementation = "prefer_rust_with_warning" },
+  completion = { documentation = { auto_show = true } },
+  implementation = "prefer_rust"
+})
+
+
+add('echasnovski/mini.pick')
+require('mini.pick').setup()
+
+-- Extra: mini.extra provides the "LSP find" and "Git find" logic
+add('echasnovski/mini.extra')
+require('mini.extra').setup()
+
+local pick = require('mini.pick')
+local extra = require('mini.extra')
+
+vim.keymap.set('n', '<leader>ff', function() pick.builtin.files() end, { desc = 'Find Files' })
+
+-- Live Grep (Search text inside source)
+vim.keymap.set('n', '<leader>fg', function() pick.builtin.grep_live() end, { desc = 'Grep Search' })
+
+-- LSP: Find Symbols (Functions, Variables in current buffer)
+vim.keymap.set('n', '<leader>fs', function() extra.pickers.lsp({ scope = 'document_symbol' }) end, { desc = 'Find Symbols' })
+
+-- LSP: Find References (Where is this source used?)
+vim.keymap.set('n', 'gr', function() extra.pickers.lsp({ scope = 'references' }) end, { desc = 'Go to References' })
+
+-- LSP: Find Definition (Where is this source defined?)
+vim.keymap.set('n', 'gd', function() extra.pickers.lsp({ scope = 'definition' }) end, { desc = 'Go to Definition' })
+
+
+-- Get capabilities from blink.cmp
+local capabilities = require('blink.cmp').get_lsp_capabilities()
+
+-- Global LSP Handlers (Predictable behavior)
+vim.lsp.handlers['workspace/diagnostic/refresh'] = function()
+  return true
+end
+
+-- Function to apply your standard settings to any server
+local function setup_server(name, opts)
+  local config = vim.tbl_deep_extend('force', {
+    capabilities = capabilities,
+  }, opts)
+
+  -- 1. Apply the configuration
+  vim.lsp.config(name, config)
+  -- 2. Enable it for the appropriate filetypes
+  vim.lsp.enable(name)
+end
+
+-- Python
+setup_server('pyright', {
+  cmd = { '/home/starlith/.npm-packages/bin/pyright-langserver', '--stdio' },
+})
+
+-- C++ (LLVM 22) - Perfect for your C++26 exploration
+setup_server('clangd', {
+  cmd = { '/usr/lib/llvm/22/bin/clangd' },
+})
+
+-- Lua
+setup_server('lua_ls', {
+  cmd = { '/usr/bin/lua-language-server' },
+})
+
+-- Rust
+setup_server('rust_analyzer', {
+  cmd = { '/home/starlith/.cargo/bin/rust-analyzer' },
+})
+
+setup_server('ts_ls', {cmd = {'/usr/bin/typescript-language-server', '--stdio'}
+})

@@ -1,0 +1,247 @@
+{
+    // ═══════════════════════════════════════════════════════════════════════
+    // Gentoo Monolith – Waybar Config  (JSONC – comments are valid here)
+    // One full bar. Zero gaps. spacing MUST stay 0.
+    // Remove "battery" from modules-right if you're on a desktop.
+    // ═══════════════════════════════════════════════════════════════════════
+
+    "layer":        "top",
+    "position":     "top",
+    "height":       40,
+    "margin-top":   0,
+    "margin-left":  0,
+    "margin-right": 0,
+    "spacing":      0,          // Never change this. It prevents bleeding.
+    "exclusive":    true,
+    "passthrough":  false,
+    "gtk-layer-shell": true,
+
+    // ── Module layout ───────────────────────────────────────────────────────
+    "modules-left": [
+        "custom/logo",
+        "hyprland/workspaces",
+        "group/hardware",
+        "temperature",
+        "hyprland/window"
+    ],
+
+    "modules-center": [
+        "clock#time",
+        "clock#date"
+    ],
+
+    "modules-right": [
+        "disk",
+        "custom/gpu",
+        "pulseaudio",
+        "network",
+        "battery",          // ← remove if desktop
+        "custom/power"
+    ],
+
+
+    // ── Hyprland Workspaces ─────────────────────────────────────────────────
+    "hyprland/workspaces": {
+        "format":           "{icon}",
+        "format-icons": {
+            "active":       "󰮯",
+            "default":      "󰊠",
+            "urgent":       "󰗖",
+            "empty":        "󰝨"
+        },
+        "on-click":         "activate",
+        "on-scroll-up":     "hyprctl dispatch workspace e-1",
+        "on-scroll-down":   "hyprctl dispatch workspace e+1",
+        "sort-by-number":   true,
+        "active-only":      false
+    },
+
+
+    // ── Active Window Title ─────────────────────────────────────────────────
+    "hyprland/window": {
+        "format":           "{}",
+        "max-length":       45,
+        "separate-outputs": true,
+        "rewrite": {
+            "(.*) — Mozilla Firefox":   "󰈹  $1",
+            "(.*) - fish":              "  $1",
+            "(.*) - zsh":               "  $1",
+            "(.*) - bash":              "  $1",
+            "(.*) - nvim":              "󰛔  $1",
+            "(.*) - Neovim":            "󰛔  $1",
+            "alacritty":                    "  Terminal",
+            "":                         "󰄉  Desktop"
+        }
+    },
+
+
+    // ── Hardware Group (CPU + Memory in a drawer) ───────────────────────────
+    "group/hardware": {
+        "orientation": "horizontal",
+        "modules": ["cpu", "memory"]
+    },
+
+    "cpu": {
+        "format":           " {usage}%",
+        "interval":         2,
+        "tooltip":          true,
+        "tooltip-format":   "CPU\nUsage:   {usage}%\nFreq:    {avg_frequency} GHz",
+        "states": {
+            "warning":      70,
+            "critical":     90
+        },
+        "on-click":         "alacritty --title btop btop"
+    },
+
+    "memory": {
+        "format":           "󰍛 {used:0.1f}G",
+        "format-alt":       "󰍛 {percentage}%",
+        "interval":         4,
+        "tooltip":          true,
+        "tooltip-format":   "Memory\nUsed:    {used:0.1f} / {total:0.1f} GiB ({percentage}%)\nSwap:    {swapUsed:0.1f} / {swapTotal:0.1f} GiB",
+        "states": {
+            "warning":      75,
+            "critical":     92
+        },
+        "on-click":         "alacritty --title btop btop",
+        "on-right-click":   ""
+    },
+
+
+    // ── Temperature ─────────────────────────────────────────────────────────
+    // Adjust hwmon-path to your chip. Run: ls /sys/class/hwmon/hwmon*/temp*_input
+    "temperature": {
+        "critical-threshold":   80,
+        "interval":             5,
+        "format":               "{icon} {temperatureC}°",
+        "format-critical":      "󰈸 {temperatureC}°",
+        "format-icons":         ["󱃃", "󰔏", "󰈸"],
+        "tooltip":              true,
+        "tooltip-format":       "Temp: {temperatureC}°C / {temperatureF}°F"
+    },
+
+
+    // ── Disk ────────────────────────────────────────────────────────────────
+    "disk": {
+        "format":           "󰋊 {percentage_used}%",
+        "path":             "/",
+        "interval":         60,
+        "tooltip":          true,
+        "tooltip-format":   "Root Disk\nUsed: {used} / {total}\nFree: {free} ({percentage_free}%)",
+        "states": {
+            "warning":      75,
+            "critical":     90
+        },
+        "on-click":         "alacritty --title ncdu ncdu /"
+    },
+
+
+    // ── GPU (AMD via sysfs; adjust card index if needed) ────────────────────
+    "custom/gpu": {
+        "exec":             "f=/sys/class/drm/card0/device/gpu_busy_percent; [ -f $f ] && cat $f || echo '?'",
+        "interval":         2,
+        "format":           "󰢮 {}%",
+        "tooltip":          true,
+        "tooltip-format":   "GPU Busy: {}%",
+        "return-type":      ""
+    },
+
+
+    // ── Clock (center, split into two for separate styling) ─────────────────
+    "clock#time": {
+        "format":           "󱑊  {:%H:%M:%S}",
+        "interval":         1,
+        "tooltip":          true,
+        "tooltip-format":   "<big>{:%A, %B %d %Y}</big>\n<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode":         "month",
+            "on-scroll":    1,
+            "on-click-right": "mode",
+            "format": {
+                "months":   "<span color='#B48BFF'><b>{}</b></span>",
+                "days":     "<span color='#DDDAEC'>{}</span>",
+                "weeks":    "<span color='#73D216'><b>W{}</b></span>",
+                "weekdays": "<span color='#6E56AF'><b>{}</b></span>",
+                "today":    "<span color='#73D216'><b><u>{}</u></b></span>"
+            }
+        }
+    },
+
+    "clock#date": {
+        "format":           "󰃭  {:%a %d %b}",
+        "interval":         60,
+        "tooltip":          true,
+        "tooltip-format":   "ISO Week {:%V of %Y}"
+    },
+
+
+    // ── Audio (PulseAudio / PipeWire via pulseaudio module) ─────────────────
+    "pulseaudio": {
+        "format":                   "{icon} {volume}%",
+        "format-muted":             "󰝟  Muted",
+        "format-bluetooth":         "󰂯  {volume}%",
+        "format-bluetooth-muted":   "󰂲  Muted",
+        "format-source":            "  {volume}%",
+        "format-source-muted":      "",
+        "format-icons": {
+            "headphone":    "󰋋",
+            "hands-free":   "󰋎",
+            "headset":      "󰋎",
+            "phone":        "",
+            "portable":     "",
+            "car":          "",
+            "default":      ["󰕿", "󰖀", "󰕾"]
+        },
+        "scroll-step":      2.0,
+        "on-click":         "pavucontrol",
+        "on-right-click":   "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-scroll-up":     "pactl set-sink-volume @DEFAULT_SINK@ +2%",
+        "on-scroll-down":   "pactl set-sink-volume @DEFAULT_SINK@ -2%",
+        "tooltip":          true,
+        "tooltip-format":   "Volume: {volume}%\nDevice: {desc}"
+    },
+
+
+    // ── Network ─────────────────────────────────────────────────────────────
+    "network": {
+        "interval":                     5,
+        "format-wifi":                  "  {signalStrength}%",
+        "format-ethernet":              "󰈀  {ipaddr}",
+        "format-disconnected":          "󰖪  No Network",
+        "format-linked":                "󰈁  No IP",
+        "tooltip":                      true,
+        "tooltip-format-wifi":          "SSID:    {essid}\nSignal:  {signalStrength}%  ({frequency} GHz)\nIP:      {ipaddr}\nGateway: {gwaddr}\nRx/Tx:   {bandwidthDownBytes} ↓  {bandwidthUpBytes} ↑",
+        "tooltip-format-ethernet":      "Interface: {ifname}\nIP:        {ipaddr}/{cidr}\nGateway:   {gwaddr}",
+        "tooltip-format-disconnected":  "No active network connection",
+        "on-click":                     "alacritty --title nmtui nmtui"
+    },
+
+
+    // ── Battery (desktop users: remove from modules-right) ──────────────────
+    "battery": {
+        "interval":         30,
+        "states": {
+            "full":         100,
+            "good":         80,
+            "warning":      30,
+            "critical":     10
+        },
+        "format":           "{icon} {capacity}%",
+        "format-charging":  "󰂄 {capacity}%",
+        "format-plugged":   "󰚥 {capacity}%",
+        "format-full":      "󰁹 {capacity}%",
+        "format-icons":     ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "tooltip":          true,
+        "tooltip-format":   "Battery: {capacity}%\nStatus:  {status}\nTime:    {time}"
+    },
+
+
+    // ── Power ────────────────────────────────────────────────────────────────
+    "custom/power": {
+        "format":           "⏻",
+        "tooltip":          false,
+        "on-click":         "wlogout --protocol layer-shell",
+        "on-right-click":   "systemctl suspend"
+    }
+}
+
