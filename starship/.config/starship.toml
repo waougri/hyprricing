@@ -1,0 +1,285 @@
+# ╔══════════════════════════════════════════════════════════════════════════╗
+# ║  STARSHIP — GENTOO BLING EDITION  ~/.config/starship.toml               ║
+# ║  Palette: #54487A  #61538D  #6E56AF  #DDDAEC  #73D216  #D9534F         ║
+# ╚══════════════════════════════════════════════════════════════════════════╝
+
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline     = true
+command_timeout = 800
+
+format = """
+[╭─](bold #6E56AF)\
+$status\
+$username\
+$hostname\
+$localip\
+$directory\
+$git_branch\
+$git_status\
+$git_metrics\
+$git_state\
+$python\
+$nodejs\
+$rust\
+$golang\
+$java\
+$kotlin\
+$docker_context\
+$nix_shell\
+$cmd_duration\
+$line_break\
+[╰─](bold #6E56AF)\
+$shlvl\
+$jobs\
+$character\
+"""
+
+right_format = """
+$memory_usage\
+$battery\
+$time\
+"""
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  CHARACTER
+# ─────────────────────────────────────────────────────────────────────────────
+[character]
+success_symbol            = '[❯](bold #6E56AF)'
+error_symbol              = '[❯](bold #D9534F)'
+vimcmd_symbol             = '[❮](bold #61538D)'
+vimcmd_replace_one_symbol = '[‹](bold #D9534F)'
+vimcmd_replace_symbol     = '[‹](bold #D9534F)'
+vimcmd_visual_symbol      = '[‹](bold #61538D)'
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  STATUS
+# ─────────────────────────────────────────────────────────────────────────────
+[status]
+disabled              = false
+format                = '\[[$symbol$status]($style)\] '
+symbol                = '✗'
+success_symbol        = '✓'
+not_executable_symbol = '!'
+not_found_symbol      = '?'
+sigint_symbol         = '⚡'
+signal_symbol         = '⚡'
+style                 = 'bold #D9534F'
+success_style         = 'bold #73D216'
+recognize_signal_code = true
+map_symbol            = true
+pipestatus            = true
+pipestatus_separator  = '[|](dim #54487A)'
+pipestatus_format     = '\[[$pipestatus]($style)\] '
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  USER
+# ─────────────────────────────────────────────────────────────────────────────
+[username]
+show_always = true
+format      = '[$user]($style)'
+style_user  = 'bold #61538D'
+style_root  = 'bold #D9534F'
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  HOSTNAME
+# ─────────────────────────────────────────────────────────────────────────────
+[hostname]
+ssh_only   = false
+format     = '[@](dim #54487A)[$hostname]($style)[─](bold #54487A)'
+style      = 'bold #61538D'
+trim_at    = '.'
+ssh_symbol = ' '
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  LOCAL IP  (SSH only)
+# ─────────────────────────────────────────────────────────────────────────────
+[localip]
+ssh_only = true
+disabled = false
+format   = '\[[ $localipv4]($style)\][─](bold #54487A)'
+style    = 'dim #DDDAEC'
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  DIRECTORY
+# ─────────────────────────────────────────────────────────────────────────────
+[directory]
+format            = '\[[$path]($style)[$read_only]($read_only_style)\][─](bold #54487A)'
+style             = '#DDDAEC'
+read_only         = '  '
+read_only_style   = '#D9534F'
+truncation_length = 4
+truncate_to_repo  = true
+home_symbol       = '~'
+truncation_symbol = '…/'
+use_os_path_sep   = true
+
+[directory.substitutions]
+"Documents" = "󰈙"
+"Downloads" = " "
+"Music"     = "󰎜"
+"Pictures"  = " "
+"Videos"    = "󰕧"
+"Desktop"   = " "
+"src"       = " "
+"code"      = " "
+"work"      = "󱁊"
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  GIT
+# ─────────────────────────────────────────────────────────────────────────────
+[git_branch]
+format            = '\[[ $symbol$branch(:$remote_branch)]($style)\]'
+symbol            = ' '
+style             = 'bold #6E56AF'
+truncation_length = 30
+truncation_symbol = '…'
+
+[git_status]
+format      = '([$all_status$ahead_behind]($style))[─](bold #54487A)'
+style       = '#DDDAEC'
+staged      = '[✚$count](#73D216)'
+modified    = '[~$count](#DDDFFF)'
+untracked   = '[?$count](#DDDAEC)'
+deleted     = '[-$count](#D9534F)'
+renamed     = '[»$count](#DDDFFF)'
+conflicted  = '[!!$count](#D9534F bold)'
+stashed     = '[≡$count](#54487A)'
+ahead       = '[⇡$count](#6E56AF)'
+behind      = '[⇣$count](#D9534F)'
+diverged    = '[⇡$ahead_count⇣$behind_count](#D9534F)'
+
+[git_metrics]
+disabled           = false
+format             = '([+$added]($added_style))([-$deleted]($deleted_style))[─](bold #54487A)'
+added_style        = '#73D216'
+deleted_style      = '#D9534F'
+only_nonzero_diffs = true
+
+[git_state]
+format       = '\[[$state( $progress_current/$progress_total)]($style)\][─](bold #54487A)'
+style        = 'bold #D9534F'
+rebase       = 'REBASE'
+merge        = 'MERGE'
+revert       = 'REVERT'
+cherry_pick  = 'CHERRY'
+bisect       = 'BISECT'
+am           = 'AM'
+am_or_rebase = 'AM/REBASE'
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  LANGUAGES
+# ─────────────────────────────────────────────────────────────────────────────
+[python]
+format            = '\[[ $pyenv_prefix($version)(\($virtualenv\))]($style)\][─](bold #54487A)'
+style             = '#6E56AF'
+pyenv_version_name = true
+detect_extensions = ['py', 'pyw']
+detect_files      = ['.python-version', 'requirements.txt', 'Pipfile', 'pyproject.toml', 'setup.py']
+
+[nodejs]
+format            = '\[[ $version]($style)\][─](bold #54487A)'
+style             = '#73D216'
+detect_extensions = ['js', 'mjs', 'cjs', 'ts', 'mts', 'cts']
+detect_files      = ['package.json', '.node-version', '.nvmrc']
+
+[rust]
+format            = '\[[ $version]($style)\][─](bold #54487A)'
+style             = '#D9534F'
+detect_extensions = ['rs']
+
+[golang]
+format            = '\[[ $version]($style)\][─](bold #54487A)'
+style             = '#DDDFFF'
+detect_extensions = ['go']
+detect_files      = ['go.mod', 'go.sum', 'go.work']
+
+[java]
+format            = '\[[ $version]($style)\][─](bold #54487A)'
+style             = '#D9534F'
+detect_extensions = ['java', 'class', 'jar', 'gradle']
+detect_files      = ['pom.xml', 'build.gradle', '.java-version']
+
+[kotlin]
+format            = '\[[ $version]($style)\][─](bold #54487A)'
+style             = '#6E56AF'
+detect_extensions = ['kt', 'kts']
+
+[docker_context]
+format       = '\[[ $context]($style)\][─](bold #54487A)'
+style        = '#DDDFFF'
+only_with_files = true
+detect_files = ['docker-compose.yml', 'docker-compose.yaml', 'Dockerfile']
+
+[nix_shell]
+format     = '\[[ $name $state]($style)\][─](bold #54487A)'
+style      = '#6E56AF'
+impure_msg = 'impure'
+pure_msg   = 'pure'
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  COMMAND DURATION
+# ─────────────────────────────────────────────────────────────────────────────
+[cmd_duration]
+min_time           = 1000
+format             = '\[[ $duration]($style)\]'
+style              = 'dim #7A7090'
+show_milliseconds  = false
+show_notifications = false
+min_time_to_notify = 30000
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  LINE 2 LEFT
+# ─────────────────────────────────────────────────────────────────────────────
+[shlvl]
+disabled      = false
+format        = '[$symbol]($style)'
+symbol        = '❯'
+style         = 'dim #54487A'
+threshold     = 2
+repeat        = true
+repeat_offset = 1
+
+[jobs]
+format           = '[$symbol$number]($style) '
+symbol           = '⚙ '
+style            = 'bold #54487A'
+number_threshold = 1
+symbol_threshold = 1
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  RIGHT PROMPT
+# ─────────────────────────────────────────────────────────────────────────────
+[memory_usage]
+disabled  = false
+format    = '[$symbol${ram_pct}]($style) '
+symbol    = '󰍛 '
+style     = 'dim #54487A'
+threshold = 60
+
+[battery]
+format             = '[$symbol$percentage]($style) '
+full_symbol        = '󰁹 '
+charging_symbol    = '󰂄 '
+discharging_symbol = '󰂃 '
+unknown_symbol     = '󰁽 '
+empty_symbol       = '󰂎 '
+
+[[battery.display]]
+threshold = 15
+style     = 'bold #D9534F'
+
+[[battery.display]]
+threshold = 40
+style     = '#D9534F'
+
+[[battery.display]]
+threshold = 70
+style     = '#6E56AF'
+
+[time]
+disabled    = false
+format      = '[ $time]($style)'
+style       = 'dim #54487A'
+time_format = '%H:%M'
+use_12hr    = false
