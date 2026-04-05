@@ -32,6 +32,16 @@ vim.opt.cmdheight = 0
 vim.opt.showmode = false
 vim.g.mapleader = " "
 
+-- Enable visual line wrapping (soft wrap)
+vim.opt.wrap = true
+-- Wrap at word boundaries rather than in the middle of a word
+vim.opt.linebreak = true
+-- Set the character limit for automatic hard wrapping
+vim.opt.textwidth = 80
+-- Optional: Ensure auto-formatting is enabled as you type
+vim.opt.formatoptions:append("t")
+vim.opt.formatoptions:append("a")
+
 vim.keymap.set("n", "<leader>e", function()
 	require("mini.files").open()
 end, { desc = "Open Mini FIles" })
@@ -42,11 +52,6 @@ vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
 -- Optional: Apply to other areas
 vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
 vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
-
-local ih = require("inlay-hints")
-vim.keymap.set("n", "<leader>ti", function()
-	ih.toggle()
-end, { desc = "Toggle Inlay Hints" })
 
 vim.keymap.set("n", "]d", function()
 	vim.diagnostic.goto_next()

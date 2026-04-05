@@ -22,16 +22,7 @@ add({
 	source = "nvim-mini/mini.pairs",
 	checkout = "stable",
 })
-require("mini.pairs").setup({
-	-- disable neighbor deletion if it's annoying
-	mappings = {
-		["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
-		["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
-		["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
-		-- Set 'delete = false' if you want to stop the auto-deleting behavior
-		["backspace"] = { action = "delete", pair = "()", neigh_pattern = "[^\\]." },
-	},
-})
+require("mini.pairs").setup()
 
 add("nvim-mini/mini.surround")
 require("mini.surround").setup()
@@ -56,9 +47,14 @@ require("mini.hipatterns").setup()
 
 add("echasnovski/mini.hues")
 require("mini.hues").setup({
-	background = "#000000",
-	foreground = "#d5c8e1",
-	accent = "purple",
+	-- Dark background: A deep, rich purple
+	background = "#000000", -- The "Gentoo Purple"
+
+	-- Foreground: A light grey for contrast
+	foreground = "#d5c8e1", -- Light, slightly desaturated purple/grey
+
+	-- Optional: Accent color for things like numbers and keywords
+	accent = "purple", -- Cyan provides the classic "matrix":w contrast with deep purple
 })
 
 add("echasnovski/mini.icons")
@@ -88,10 +84,15 @@ add({ source = "mason-org/mason-lspconfig.nvim" })
 require("mason").setup()
 require("mason-lspconfig").setup({ automatic_enable = true })
 
+vim.lsp.enable("pyright", { cmd = { "/home/starlith/.npm-packages/bin/pyright" } })
+vim.lsp.enable("clangd", { cmd = { "/usr/lib/llvm/22/bin/clangd" } })
+vim.lsp.enable("lua_ls", { cmd = { "/usr/bin/lua-language-server" } })
+vim.lsp.enable("rust-analyzer", { cmd = { "/home/starlith/.cargo/bin/rust-analyzer" } })
+
 MiniDeps.add({
 	source = "saghen/blink.cmp",
 	depends = { "rafamadriz/friendly-snippets" },
-	checkout = "main",
+	checkout = "main", -- check releases for latest tag
 })
 
 require("blink.cmp").setup({
@@ -112,6 +113,7 @@ require("blink.cmp").setup({
 add("echasnovski/mini.pick")
 require("mini.pick").setup()
 
+-- Extra: mini.extra provides the "LSP find" and "Git find" logic
 add("echasnovski/mini.extra")
 require("mini.extra").setup()
 
@@ -120,9 +122,9 @@ require("which-key").setup()
 
 add("MysticalDevil/inlay-hints.nvim")
 require("inlay-hints").setup()
-
 add("stevearc/conform.nvim")
-add("zapling/mason-conform.nvim")
+
+add("zapling/mason-conform.nvim") -- auto-installs formatters via mason
 
 require("conform").setup({
 	formatters_by_ft = {
@@ -131,12 +133,17 @@ require("conform").setup({
 		rust = { "rustfmt", lsp_format = "fallback" },
 		c = { "clang-format" },
 		cpp = { "clang-format" },
+
 		javascript = { "prettier", stop_after_first = true },
 		typescript = { "prettier", stop_after_first = true },
-		json = {}, -- disabled: prettier mangles indentation on save
+	},
+	format_on_save = {
+		timeout_ms = 500,
+		lsp_format = "fallback", -- use LSP if no formatter configured
 	},
 })
 
+-- must come after conform.setup()
 require("mason-conform").setup()
 
 local pick = require("mini.pick")
@@ -146,30 +153,36 @@ vim.keymap.set("n", "<leader>ff", function()
 	pick.builtin.files()
 end, { desc = "Find Files" })
 
+-- Live Grep (Search text inside source)
 vim.keymap.set("n", "<leader>fg", function()
 	pick.builtin.grep_live()
 end, { desc = "Grep Search" })
 
+-- LSP: Find Symbols (Functions, Variables in current buffer)
 vim.keymap.set("n", "<leader>fs", function()
 	extra.pickers.lsp({ scope = "document_symbol" })
 end, { desc = "Find Symbols" })
 
+-- LSP: Find References (Where is this source used?)
 vim.keymap.set("n", "gr", function()
 	extra.pickers.lsp({ scope = "references" })
 end, { desc = "Go to References" })
 
+-- LSP: Find Definition (Where is this source defined?)
 vim.keymap.set("n", "gd", function()
 	extra.pickers.lsp({ scope = "definition" })
 end, { desc = "Go to Definition" })
 
+-- Get capabilities from blink.cmp
 local capabilities = require("blink.cmp").get_lsp_capabilities()
 
+-- Global LSP Handlers (Predictable behavior)
 vim.lsp.handlers["workspace/diagnostic/refresh"] = function()
 	return true
 end
 
 local ih = require("inlay-hints")
-
+-- Function to apply your standard settings to any server
 local function setup_server(name, opts)
 	local config = vim.tbl_deep_extend("force", {
 		capabilities = capabilities,
@@ -177,10 +190,14 @@ local function setup_server(name, opts)
 			ih.on_attach(client, bufnr)
 		end,
 	}, opts)
+
+	-- 1. Apply the configuration
 	vim.lsp.config(name, config)
+	-- 2. Enable it for the appropriate filetypes
 	vim.lsp.enable(name)
 end
 
+-- Python
 setup_server("pyright", {
 	cmd = { "/home/starlith/.npm-packages/bin/pyright-langserver", "--stdio" },
 })
