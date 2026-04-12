@@ -8,7 +8,7 @@
   // ── Logo ──────────────────────────────────────────────────────────────────
   "logo": {
     "type": "auto",
-    "source": "gentoo",
+    "source": "arch",
     "padding": {
       "top": 1,
       "left": 2,

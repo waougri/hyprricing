@@ -104,9 +104,8 @@ require("blink.cmp").setup({
 		"buffer",
 	} },
 	signature = { enabled = true },
-	fuzzy = { implementation = "prefer_rust_with_warning" },
+	fuzzy = { implementation = "prefer_rust" },
 	completion = { documentation = { auto_show = true } },
-	implementation = "prefer_rust",
 })
 
 add("echasnovski/mini.pick")
@@ -185,15 +184,28 @@ setup_server("pyright", {
 	cmd = { "/home/starlith/.npm-packages/bin/pyright-langserver", "--stdio" },
 })
 
+setup_server("qmlls", {
+	cmd = { "/usr/sbin/qmlls6" },
+	settings = {
+		settings = {
+			qml = {
+				hint = {
+					enable = true, -- Enables inlay hints
+				},
+			},
+		},
+	},
+})
+
 setup_server("lua_ls", {
-	cmd = { "/usr/bin/lua-language-server" },
+	cmd = { "/usr/sbin/lua-language-server" },
 	settings = {
 		Lua = { hint = { enable = true } },
 	},
 })
 
 setup_server("clangd", {
-	cmd = { "/usr/lib/llvm/22/bin/clangd" },
+	cmd = { "/usr/sbin/clangd" },
 	settings = {
 		clangd = {
 			InlayHints = {
@@ -207,7 +219,7 @@ setup_server("clangd", {
 })
 
 setup_server("rust_analyzer", {
-	cmd = { "/home/starlith/.cargo/bin/rust-analyzer" },
+	cmd = { "/usr/sbin/rust-analyzer" },
 	settings = {
 		["rust-analyzer"] = {
 			inlayHints = {
@@ -221,7 +233,7 @@ setup_server("rust_analyzer", {
 })
 
 setup_server("ts_ls", {
-	cmd = { "/usr/bin/typescript-language-server", "--stdio" },
+	cmd = { "/usr/sbin/typescript-language-server", "--stdio" },
 	settings = {
 		typescript = {
 			inlayHints = {

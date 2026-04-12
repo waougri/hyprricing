@@ -1,819 +1,217 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Gentoo Monolith  –  Waybar GTK CSS  v3  "Ultraviolet"
-   ───────────────────────────────────────────────────────────────────────────
-   One bar. Full width. No gaps. Every pixel is intentional.
-
-   Visual layers (bottom → top):
-     1. Bar shell: deep gradient with purple-shifted midpoint
-     2. Center clock zone: inset glow + flanking radiant separators
-     3. Module resting state: subtle colored inset shadows
-     4. Module hover: outer colored box-shadow bloom + background tint
-     5. Workspace active: glowing capsule, animated border
-     6. State animations: multi-stop keyframes that feel physical
-     7. Power: red takeover with 3-layer box-shadow explosion
-
-   GTK CSS maximums used here:
-     • box-shadow: unlimited layers, used for glow, depth, inset tint
-     • background: linear-gradient on all containers and buttons
-     • @keyframes: 5–7 stops for organic motion
-     • border-radius: capsule workspaces, rounded tooltips
-     • transition: spring easing (cubic-bezier overshoot) on size
-     • text-shadow: glow on clock, logo, active states
+   zenith · Arch + Niri · Waybar stylesheet
+   Palette: Catppuccin Mocha
+   Font:    JetBrainsMono Nerd Font (icons) + Rubik (text)
+            Install: sudo pacman -S ttf-jetbrains-mono-nerd ttf-rubik
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ── Catppuccin Mocha ─────────────────────────────────────────────────────── */
+@define-color base    #1e1e2e;
+@define-color mantle  #181825;
+@define-color crust   #11111b;
+@define-color surface0 #313244;
+@define-color surface1 #45475a;
+@define-color overlay0 #6c7086;
+@define-color text    #cdd6f4;
+@define-color subtext #a6adc8;
 
-/* ── Color Tokens ─────────────────────────────────────────────────────────── */
+@define-color lavender #b4befe;
+@define-color blue     #89b4fa;
+@define-color sapphire #74c7ec;
+@define-color teal     #94e2d5;
+@define-color green    #a6e3a1;
+@define-color yellow   #f9e2af;
+@define-color peach    #fab387;
+@define-color red      #f38ba8;
+@define-color mauve    #cba6f7;
+@define-color pink     #f5c2e7;
 
-/* Backgrounds */
-@define-color bg_void        #04030F;
-@define-color bg_deep        #060510;
-@define-color bg_base        #08071A;
-@define-color bg_surface     #0D0C1E;
-@define-color bg_elevated    #141228;
-@define-color bg_raised      #1A1830;
-
-/* Semantic state backgrounds */
-@define-color bg_pu          rgba(110, 86, 175, 0.14);
-@define-color bg_pu_hi       rgba(110, 86, 175, 0.26);
-@define-color bg_green       rgba(115, 210, 22,  0.11);
-@define-color bg_green_hi    rgba(115, 210, 22,  0.22);
-@define-color bg_cyan        rgba(78,  205, 196, 0.11);
-@define-color bg_cyan_hi     rgba(78,  205, 196, 0.22);
-@define-color bg_blue        rgba(125, 200, 255, 0.10);
-@define-color bg_blue_hi     rgba(125, 200, 255, 0.20);
-@define-color bg_magenta     rgba(196, 126, 212, 0.11);
-@define-color bg_magenta_hi  rgba(196, 126, 212, 0.22);
-@define-color bg_yellow      rgba(232, 201, 125, 0.12);
-@define-color bg_yellow_hi   rgba(232, 201, 125, 0.22);
-@define-color bg_orange      rgba(255, 158, 100, 0.12);
-@define-color bg_red         rgba(217, 83,  79,  0.14);
-@define-color bg_red_hi      rgba(217, 83,  79,  0.28);
-
-/* Gentoo brand */
-@define-color pu_deep        #54487A;
-@define-color pu_mid         #61538D;
-@define-color pu_bright      #6E56AF;
-@define-color pu_accent      #8C6FC1;
-@define-color pu_hi          #B48BFF;
-@define-color pu_glow        rgba(180, 139, 255, 0.55);
-@define-color pu_glow_soft   rgba(110, 86,  175, 0.30);
-@define-color g_grey         #DDDAEC;
-@define-color g_white        #DDDFFF;
-@define-color g_green        #73D216;
-@define-color g_green_hi     #90E83A;
-@define-color g_green_glow   rgba(115, 210, 22, 0.50);
-@define-color g_red          #D9534F;
-@define-color g_red_hi       #F07070;
-@define-color g_red_glow     rgba(217, 83, 79, 0.55);
-
-/* Semantic palette */
-@define-color col_yellow     #E8C97D;
-@define-color col_orange     #FF9E64;
-@define-color col_blue       #7DC8FF;
-@define-color col_blue_glow  rgba(125, 200, 255, 0.45);
-@define-color col_cyan       #4ECDC4;
-@define-color col_cyan_glow  rgba(78, 205, 196, 0.45);
-@define-color col_magenta    #C47ED4;
-@define-color col_mag_glow   rgba(196, 126, 212, 0.45);
-@define-color col_yel_glow   rgba(232, 201, 125, 0.45);
-
-/* Text */
-@define-color tx_hi          #EDEAF8;
-@define-color tx_base        #DDDAEC;
-@define-color tx_dim         #9893B0;
-@define-color tx_mute        #3E3C55;
-@define-color tx_ghost       #262440;
-
-/* Structure */
-@define-color sep            rgba(84,  72, 122, 0.22);
-@define-color sep_glow       rgba(110, 86, 175, 0.45);
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   KEYFRAME LIBRARY
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-/* Logo: green → violet → bright-green, with a box-shadow breathe.
-   7 stops = silky organic cycle, never mechanical. */
-@keyframes logo-pulse {
-    0%   { color: @g_green;    box-shadow: inset 0 0 0 transparent, 0 0 10px @g_green_glow;    }
-    20%  { color: @g_green_hi; box-shadow: inset 0 0 0 transparent, 0 0 20px @g_green_glow;    }
-    45%  { color: @pu_hi;      box-shadow: inset 0 0 0 transparent, 0 0 18px @pu_glow;         }
-    60%  { color: @pu_accent;  box-shadow: inset 0 0 0 transparent, 0 0 10px @pu_glow_soft;    }
-    80%  { color: @g_green_hi; box-shadow: inset 0 0 0 transparent, 0 0 16px @g_green_glow;    }
-    100% { color: @g_green;    box-shadow: inset 0 0 0 transparent, 0 0 10px @g_green_glow;    }
+/* ── Reset & Root ─────────────────────────────────────────────────────────── */
+* {
+    font-family:    "Rubik", "JetBrainsMono Nerd Font", monospace;
+    font-size:      13px;
+    font-weight:    400;
+    border:         none;
+    border-radius:  0;
+    min-height:     0;
+    padding:        0;
+    margin:         0;
+    box-shadow:     none;
+    text-shadow:    none;
 }
 
-/* Active workspace: border-color + background + shadow cycle.
-   Makes the active pill feel like it's breathing. */
-@keyframes ws-active-breathe {
-    0%   { border-color: @pu_bright;   box-shadow: 0 0  8px @pu_glow_soft, inset 0 0 12px rgba(110,86,175,0.10); }
-    40%  { border-color: @pu_hi;       box-shadow: 0 0 16px @pu_glow,      inset 0 0 18px rgba(110,86,175,0.18); }
-    70%  { border-color: @pu_accent;   box-shadow: 0 0 12px @pu_glow_soft, inset 0 0 14px rgba(110,86,175,0.13); }
-    100% { border-color: @pu_bright;   box-shadow: 0 0  8px @pu_glow_soft, inset 0 0 12px rgba(110,86,175,0.10); }
-}
-
-/* Urgent workspace: aggressive three-color alarm. */
-@keyframes ws-urgent {
-    0%   { background: @bg_red;    border-color: @g_red;    color: @g_red;    box-shadow: 0 0  6px @g_red_glow; }
-    35%  { background: @bg_red_hi; border-color: @g_red_hi; color: @tx_hi;    box-shadow: 0 0 20px @g_red_glow; }
-    65%  { background: @bg_red;    border-color: @g_red;    color: @g_red_hi; box-shadow: 0 0 10px @g_red_glow; }
-    100% { background: @bg_red;    border-color: @g_red;    color: @g_red;    box-shadow: 0 0  6px @g_red_glow; }
-}
-
-/* CPU/memory/disk critical: 3-phase flash — looks like a hardware alarm. */
-@keyframes critical-alarm {
-    0%   { color: @g_red;    background-color: transparent;  box-shadow: none;                }
-    25%  { color: @tx_hi;    background-color: @bg_red;      box-shadow: 0 0 14px @g_red_glow; }
-    55%  { color: @g_red_hi; background-color: @bg_red_hi;   box-shadow: 0 0 22px @g_red_glow; }
-    80%  { color: @g_red;    background-color: @bg_red;      box-shadow: 0 0  8px @g_red_glow; }
-    100% { color: @g_red;    background-color: transparent;  box-shadow: none;                }
-}
-
-/* Warning: amber-orange sway, very smooth. */
-@keyframes warn-breathe {
-    0%   { color: @col_yellow; }
-    30%  { color: @col_orange; }
-    60%  { color: @col_yellow; }
-    85%  { color: #FFB347;     }
-    100% { color: @col_yellow; }
-}
-
-/* Network wifi: green ↔ cyan, implies data flowing. */
-@keyframes net-flow {
-    0%   { color: @g_green;      }
-    30%  { color: @g_green_hi;   }
-    60%  { color: @col_cyan;     }
-    80%  { color: @g_green;      }
-    100% { color: @g_green;      }
-}
-
-/* Battery charging: a "charging sweep" from dim to bright green. */
-@keyframes charging-sweep {
-    0%   { color: rgba(115,210,22,0.55); }
-    40%  { color: @g_green;              }
-    70%  { color: @g_green_hi;           }
-    90%  { color: @g_green;              }
-    100% { color: rgba(115,210,22,0.55); }
-}
-
-/* Battery critical draining: rapid red strobe. */
-@keyframes batt-dying {
-    0%   { color: @g_red;    background: transparent;  box-shadow: none;                }
-    30%  { color: @tx_hi;    background: @bg_red_hi;   box-shadow: 0 0 18px @g_red_glow; }
-    60%  { color: @g_red_hi; background: @bg_red;      box-shadow: 0 0  8px @g_red_glow; }
-    100% { color: @g_red;    background: transparent;  box-shadow: none;                }
-}
-
-/* Clock: very slow purple shimmer. The bar's quiet pulse. */
-@keyframes clock-shimmer {
-    0%   { color: @g_white;  }
-    40%  { color: @tx_hi;    }
-    70%  { color: @pu_hi;    }
-    100% { color: @g_white;  }
-}
-
-/* Center zone radiant separator line glow. */
-@keyframes sep-radiate {
-    0%   { border-color: @sep;     }
-    50%  { border-color: @sep_glow; }
-    100% { border-color: @sep;     }
-}
-
-/* Power button idle: barely-breathing red hint. */
-@keyframes power-idle {
-    0%   { color: @tx_ghost; }
-    50%  { color: @tx_mute;  }
-    100% { color: @tx_ghost; }
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   BAR SHELL  –  The Monolith
-   ═══════════════════════════════════════════════════════════════════════════ */
-
+/* ── Bar ──────────────────────────────────────────────────────────────────── */
 window#waybar {
-    /* 4-stop gradient: near-void at top, mid-purple tint at center,
-       back to near-void at the bottom. The purple is almost imperceptible
-       — felt, not seen. */
-    background: linear-gradient(
-        180deg,
-        @bg_elevated  0%,
-        @bg_raised    18%,
-        @bg_surface   50%,
-        @bg_base      82%,
-        @bg_deep      100%
-    );
-
-    /* Bottom seal: 3px — a Gentoo brand stripe visible on every workspace.
-       The compound box-shadow gives it a halo that bleeds onto the desktop. */
-    border-bottom: 3px solid @pu_mid;
-    box-shadow:
-        /* Inner top specular: thin glass-edge highlight */
-        inset 0  1px 0 rgba(221, 223, 255, 0.06),
-        /* Inner bottom — deepens the lower 4px */
-        inset 0 -2px 6px rgba(6, 5, 16, 0.80),
-        /* Mid glow — the bar floats slightly */
-        0 2px  8px rgba(0, 0, 0, 0.85),
-        0 4px 24px rgba(0, 0, 0, 0.70),
-        /* Purple halo leaking downward onto the desktop */
-        0 3px 12px rgba(84, 72, 122, 0.35),
-        0 6px 28px rgba(84, 72, 122, 0.18);
-
-    color:          @tx_base;
-    font-family:    "JetBrainsMono Nerd Font", "JetBrains Mono", "Iosevka Nerd Font", monospace;
-    font-size:      12.5px;
-    font-weight:    600;
-    min-height:     38px;
+    background:     @base;
+    color:          @text;
+    border-radius:  10px;
+    border:         1px solid @surface0;
+    box-shadow:     0 4px 24px alpha(@crust, 0.8);
 }
 
-window#waybar.hidden {
-    opacity:    0.08;
-    transition: opacity 0.7s ease;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   CONTAINER RESET  +  ZONE STYLING
-   ═══════════════════════════════════════════════════════════════════════════ */
-
+/* Segment separators via transparent padding */
 .modules-left,
 .modules-center,
 .modules-right {
-    background:     transparent;
-    border:         none;
-    border-radius:  0;
-    box-shadow:     none;
-    padding:        0;
-    margin:         0;
+    padding:        0 4px;
 }
 
-/* Center clock zone: upward glow + animated flanking hairlines.
-   The background is a very soft centered radial — purple core fading out.
-   The border hairlines animate separately (see sep-radiate on .modules-center). */
-.modules-center {
-    background: linear-gradient(
-        90deg,
-        transparent                     0%,
-        rgba(84, 72, 122, 0.06)        15%,
-        rgba(84, 72, 122, 0.11)        50%,
-        rgba(84, 72, 122, 0.06)        85%,
-        transparent                    100%
-    );
-    border-left:  1px solid @sep;
-    border-right: 1px solid @sep;
-    box-shadow:
-        inset 0 -2px 8px rgba(84, 72, 122, 0.10),
-        inset 0  0  20px rgba(84, 72, 122, 0.05);
-    animation: sep-radiate 8s infinite ease-in-out;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   TOOLTIP
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-tooltip {
-    background:   @bg_elevated;
-    border:       1px solid @pu_mid;
-    border-radius: 10px;
-    padding:      10px 14px;
-    box-shadow:
-        0  8px 32px rgba(0, 0, 0, 0.85),
-        0  2px  8px rgba(0, 0, 0, 0.60),
-        0  0   12px rgba(84, 72, 122, 0.30),
-        inset 0 1px 0 rgba(221, 223, 255, 0.06);
-}
-
-tooltip label {
-    color:       @tx_base;
-    font-family: "JetBrainsMono Nerd Font", monospace;
-    font-size:   12px;
-    font-weight: 500;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   MODULE BASE
-   Every module shares this foundation.
-   Resting state has a micro inset shadow tinted to the bar background —
-   creates very subtle depth without glowing at rest.
-   ═══════════════════════════════════════════════════════════════════════════ */
-
+/* ── Generic module pill ──────────────────────────────────────────────────── */
 #custom-logo,
-#workspaces,
+#niri-workspaces,
+#niri-window,
 #cpu,
 #memory,
 #temperature,
-#disk,
-#clock,
-#pulseaudio,
-#network,
 #custom-gpu,
-#battery,
-#custom-power,
-#window {
-    background:   transparent;
-    border:       none;
-    border-radius: 0;
-    color:        @tx_base;
-    margin:       0;
-    padding:      0 14px;
-    min-height:   38px;
-    transition:
-        background-color  0.24s ease,
-        color             0.18s ease,
-        border-color      0.24s ease,
-        box-shadow        0.28s ease,
-        padding           0.30s cubic-bezier(0.34, 1.56, 0.64, 1),
-        min-width         0.30s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   LOGO
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-#custom-logo {
-    color:         @g_green;
-    font-size:     18px;
-    padding:       0 22px 0 18px;
-    border-right:  1px solid @sep;
-    /* Alive. The bar's heartbeat. Glow radiates outward. */
-    animation:     logo-pulse 7s infinite ease-in-out;
-}
-
-#custom-logo:hover {
-    color:         @g_white;
-    padding:       0 28px 0 18px;
-    background:    @bg_green;
-    box-shadow:
-        inset 0 0 16px rgba(115, 210, 22, 0.12),
-        0 0 12px @g_green_glow;
-    animation:     none;
-    border-right:  1px solid rgba(115, 210, 22, 0.35);
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   WORKSPACES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-#workspaces {
-    padding:      0 8px;
-    border-right: 1px solid @sep;
-}
-
-/* Capsule buttons: rounded pill shape. */
-#workspaces button {
-    background:    transparent;
-    border:        1px solid transparent;
-    border-radius: 6px;
-    color:         @tx_mute;
-    font-size:     13px;
-    margin:        6px 2px;
-    min-height:    26px;
-    min-width:     26px;
-    padding:       0 6px;
-    transition:
-        background-color  0.20s ease,
-        color             0.16s ease,
-        border-color      0.20s ease,
-        box-shadow        0.22s ease,
-        min-width         0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
-        margin            0.20s ease;
-}
-
-/* Active: glowing purple capsule — the hero element of the workspaces. */
-#workspaces button.active {
-    background: linear-gradient(
-        180deg,
-        rgba(110, 86, 175, 0.28) 0%,
-        rgba(84,  72, 122, 0.18) 100%
-    );
-    border:    1px solid @pu_bright;
-    color:     @pu_hi;
-    min-width: 34px;
-    text-shadow: 0 0 8px @pu_glow;
-    animation: ws-active-breathe 4s infinite ease-in-out;
-}
-
-/* Urgent: angry red — something needs your attention RIGHT NOW. */
-#workspaces button.urgent {
-    background: @bg_red;
-    border:     1px solid @g_red;
-    color:      @g_red_hi;
-    animation:  ws-urgent 0.75s infinite ease-in-out;
-}
-
-/* Empty persistent slot: ghost presence. */
-#workspaces button.empty {
-    color:     rgba(62, 60, 85, 0.50);
-    min-width: 20px;
-}
-
-/* Hover: soft purple tint, border becomes visible. */
-#workspaces button:hover {
-    background: @bg_pu;
-    border:     1px solid @pu_mid;
-    color:      @tx_hi;
-    min-width:  30px;
-    box-shadow: 0 0 8px @pu_glow_soft;
-}
-
-#workspaces button.active:hover {
-    background: @bg_pu_hi;
-    box-shadow: 0 0 20px @pu_glow;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   HARDWARE GROUP WRAPPER
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-#hardware {
-    background:  transparent;
-    border-left: 1px solid @sep;
-    padding:     0;
-    margin:      0;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   CPU
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-#cpu {
-    color:        @col_cyan;
-    border-right: 1px solid @sep;
-    box-shadow:   inset 0 0 10px rgba(78, 205, 196, 0.04);
-}
-
-#cpu:hover {
-    background:  @bg_cyan;
-    color:       @tx_hi;
-    padding:     0 22px;
-    box-shadow:
-        inset 0 0 16px rgba(78, 205, 196, 0.10),
-        0 0 14px @col_cyan_glow;
-    border-right: 1px solid rgba(78, 205, 196, 0.30);
-}
-
-#cpu.warning {
-    color:     @col_yellow;
-    animation: warn-breathe 2.8s infinite ease-in-out;
-}
-
-#cpu.critical {
-    animation: critical-alarm 0.85s infinite ease-in-out;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   MEMORY
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-#memory {
-    color:     @pu_accent;
-    box-shadow: inset 0 0 10px rgba(140, 111, 193, 0.04);
-}
-
-#memory:hover {
-    background: @bg_pu;
-    color:      @tx_hi;
-    padding:    0 22px;
-    box-shadow:
-        inset 0 0 16px rgba(140, 111, 193, 0.10),
-        0 0 14px @pu_glow_soft;
-}
-
-#memory.warning {
-    color:     @col_yellow;
-    animation: warn-breathe 2.8s infinite ease-in-out;
-}
-
-#memory.critical {
-    animation: critical-alarm 0.85s infinite ease-in-out;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   TEMPERATURE
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-#temperature {
-    color:        @col_blue;
-    border-left:  1px solid @sep;
-    border-right: 1px solid @sep;
-    box-shadow:   inset 0 0 10px rgba(125, 200, 255, 0.04);
-}
-
-#temperature:hover {
-    background: @bg_blue;
-    color:      @tx_hi;
-    padding:    0 22px;
-    box-shadow:
-        inset 0 0 16px rgba(125, 200, 255, 0.10),
-        0 0 14px @col_blue_glow;
-}
-
-#temperature.critical {
-    animation: critical-alarm 0.70s infinite ease-in-out;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   WINDOW TITLE
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-#window {
-    color:        @tx_dim;
-    font-style:   italic;
-    font-weight:  400;
-    font-size:    12px;
-    border-left:  1px solid @sep;
-    padding:      0 20px;
-    min-width:    60px;
-}
-
-#window.empty {
-    color:    @tx_ghost;
-    min-width: 10px;
-    padding:   0 8px;
-}
-
-#window:hover {
-    color: @tx_base;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   CLOCK  –  The Centerpiece
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-/* Time: slow purple shimmer — the heart of the bar. */
-#clock.time {
-    color:          @g_white;
-    font-size:      14px;
-    font-weight:    800;
-    letter-spacing: 1.2px;
-    padding:        0 12px 0 20px;
-    text-shadow:    0 0 12px @pu_glow_soft;
-    animation:      clock-shimmer 12s infinite ease-in-out;
-}
-
-/* Date: understated companion. */
-#clock.date {
-    color:          @tx_dim;
-    font-size:      11.5px;
-    font-weight:    500;
-    letter-spacing: 0.3px;
-    padding:        0 20px 0 8px;
-}
-
-#clock.time:hover {
-    color:       @pu_hi;
-    text-shadow: 0 0 20px @pu_glow;
-    animation:   none;
-    background:  transparent;
-}
-
-#clock.date:hover {
-    color:      @tx_base;
-    background: transparent;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   DISK
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-#disk {
-    color:       @tx_dim;
-    border-left: 1px solid @sep;
-}
-
-#disk:hover {
-    background: @bg_pu;
-    color:      @tx_hi;
-    padding:    0 22px;
-    box-shadow:
-        inset 0 0 14px rgba(110, 86, 175, 0.09),
-        0 0 10px @pu_glow_soft;
-}
-
-#disk.warning {
-    color:     @col_yellow;
-    animation: warn-breathe 5s infinite ease-in-out;
-}
-
-#disk.critical {
-    animation: critical-alarm 1.8s infinite ease-in-out;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   GPU
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-#custom-gpu {
-    color:        @col_magenta;
-    border-left:  1px solid @sep;
-    border-right: 1px solid @sep;
-    box-shadow:   inset 0 0 10px rgba(196, 126, 212, 0.04);
-}
-
-#custom-gpu:hover {
-    background: @bg_magenta;
-    color:      @tx_hi;
-    padding:    0 22px;
-    box-shadow:
-        inset 0 0 16px rgba(196, 126, 212, 0.12),
-        0 0 14px @col_mag_glow;
-    border-left:  1px solid rgba(196, 126, 212, 0.30);
-    border-right: 1px solid rgba(196, 126, 212, 0.30);
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   PULSEAUDIO / AUDIO
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-#pulseaudio {
-    color:       @col_blue;
-    border-left: 1px solid @sep;
-    box-shadow:  inset 0 0 10px rgba(125, 200, 255, 0.03);
-}
-
-#pulseaudio:hover {
-    background: @bg_blue;
-    color:      @tx_hi;
-    padding:    0 22px;
-    box-shadow:
-        inset 0 0 16px rgba(125, 200, 255, 0.10),
-        0 0 14px @col_blue_glow;
-    border-left: 1px solid rgba(125, 200, 255, 0.30);
-}
-
-/* Muted: visually absent. Dimmed icon, italic, barely there. */
-#pulseaudio.muted {
-    color:      @tx_ghost;
-    font-style: italic;
-}
-
-#pulseaudio.muted:hover {
-    background: rgba(62, 60, 85, 0.12);
-    color:      @tx_mute;
-}
-
-/* Bluetooth: warmer cyan tint. */
-#pulseaudio.bluetooth {
-    color: @col_cyan;
-}
-
-#pulseaudio.bluetooth:hover {
-    background: @bg_cyan;
-    box-shadow:
-        inset 0 0 16px rgba(78, 205, 196, 0.10),
-        0 0 14px @col_cyan_glow;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   NETWORK
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-#network {
-    color:       @g_green;
-    border-left: 1px solid @sep;
-    animation:   net-flow 6s infinite ease-in-out;
-}
-
-#network:hover {
-    background: @bg_green;
-    color:      @tx_hi;
-    padding:    0 22px;
-    animation:  none;
-    box-shadow:
-        inset 0 0 16px rgba(115, 210, 22, 0.10),
-        0 0 14px @g_green_glow;
-    border-left: 1px solid rgba(115, 210, 22, 0.30);
-}
-
-/* Ethernet: steady cyan. Reliable wired link. No animation. */
-#network.ethernet {
-    color:     @col_cyan;
-    animation: none;
-}
-
-#network.ethernet:hover {
-    background: @bg_cyan;
-    box-shadow:
-        inset 0 0 16px rgba(78, 205, 196, 0.10),
-        0 0 14px @col_cyan_glow;
-}
-
-/* Linked, no IP: amber pending. */
-#network.linked {
-    color:     @col_yellow;
-    animation: warn-breathe 3.5s infinite ease-in-out;
-}
-
-/* Disconnected: alarm. */
-#network.disconnected {
-    color:     @g_red;
-    animation: critical-alarm 2.5s infinite ease-in-out;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   BATTERY
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-#battery {
-    color:       @g_green;
-    border-left: 1px solid @sep;
-}
-
-#battery:hover {
-    background: @bg_green;
-    color:      @tx_hi;
-    padding:    0 22px;
-    animation:  none;
-    box-shadow:
-        inset 0 0 16px rgba(115, 210, 22, 0.10),
-        0 0 12px @g_green_glow;
-}
-
-/* Charging: sweeping green implies energy entering. */
-#battery.charging {
-    color:     @g_green;
-    animation: charging-sweep 1.6s infinite ease-in-out;
-}
-
-#battery.plugged,
-#battery.full {
-    color:     @g_green;
-    animation: none;
-}
-
-#battery.good { color: @g_green; }
-
-/* Warning: amber — down to reserve. */
-#battery.warning {
-    color:     @col_yellow;
-    animation: warn-breathe 3s infinite ease-in-out;
-}
-
-/* Critical, not charging: DYING. Rapid strobe. */
-#battery.critical {
-    animation: batt-dying 0.65s infinite ease-in-out;
-}
-
-#battery.critical:not(.charging) {
-    animation: batt-dying 0.48s infinite ease-in-out;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   POWER BUTTON
-   ───────────────────────────────────────────────────────────────────────────
-   Resting: barely visible — a ghost in the corner.
-   Hover: the entire right edge ignites. Red takeover. 3-layer glow explosion.
-   This is the most consequential button in any UI. It should FEEL like it.
-   ═══════════════════════════════════════════════════════════════════════════ */
-
+#disk,
+#network,
+#pulseaudio,
+#clock-time,
+#clock-date,
 #custom-power {
-    color:        @tx_ghost;
-    border-left:  1px solid @sep;
-    font-size:    15px;
-    padding:      0 20px 0 14px;
-    animation:    power-idle 8s infinite ease-in-out;
-    transition:
-        background-color  0.18s ease,
-        color             0.14s ease,
-        padding           0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
-        box-shadow        0.20s ease,
-        border-color      0.18s ease;
+    padding:        0 10px;
+    margin:         4px 2px;
+    border-radius:  6px;
+    color:          @text;
+    background:     transparent;
+    transition:     background 200ms ease, color 200ms ease;
 }
 
+/* ── Logo ─────────────────────────────────────────────────────────────────── */
+#custom-logo {
+    font-size:      16px;
+    color:          @blue;
+    padding:        0 12px 0 8px;
+    margin-right:   2px;
+}
+#custom-logo:hover {
+    background:     @surface0;
+    color:          @lavender;
+}
+
+/* ── Workspaces ───────────────────────────────────────────────────────────── */
+#niri-workspaces button {
+    padding:        0 5px;
+    margin:         4px 1px;
+    border-radius:  6px;
+    color:          @overlay0;
+    background:     transparent;
+    transition:     all 200ms ease;
+    min-width:      24px;
+}
+#niri-workspaces button:hover {
+    background:     @surface0;
+    color:          @text;
+}
+#niri-workspaces button.active {
+    color:          @blue;
+    background:     @surface0;
+    font-weight:    700;
+}
+#niri-workspaces button.urgent {
+    color:          @red;
+    background:     alpha(@red, 0.15);
+}
+
+/* ── Window title ─────────────────────────────────────────────────────────── */
+#niri-window {
+    color:          @subtext;
+    font-size:      12px;
+    padding:        0 8px;
+}
+
+/* ── CPU ──────────────────────────────────────────────────────────────────── */
+#cpu {
+    color:          @sapphire;
+}
+#cpu:hover                    { background: @surface0; }
+#cpu.warning                  { color: @yellow; }
+#cpu.critical                 { color: @red; background: alpha(@red, 0.12); }
+
+/* ── Memory ───────────────────────────────────────────────────────────────── */
+#memory {
+    color:          @teal;
+}
+#memory:hover                 { background: @surface0; }
+#memory.warning               { color: @yellow; }
+#memory.critical              { color: @red; background: alpha(@red, 0.12); }
+
+/* ── Temperature ──────────────────────────────────────────────────────────── */
+#temperature {
+    color:          @green;
+}
+#temperature:hover            { background: @surface0; }
+#temperature.critical         { color: @red; background: alpha(@red, 0.12); animation: pulse 1.5s ease-in-out infinite; }
+
+/* ── GPU ──────────────────────────────────────────────────────────────────── */
+#custom-gpu {
+    color:          @mauve;
+}
+#custom-gpu:hover             { background: @surface0; }
+
+/* ── Disk ─────────────────────────────────────────────────────────────────── */
+#disk {
+    color:          @peach;
+}
+#disk:hover                   { background: @surface0; }
+#disk.warning                 { color: @yellow; }
+#disk.critical                { color: @red; background: alpha(@red, 0.12); }
+
+/* ── Network ──────────────────────────────────────────────────────────────── */
+#network {
+    color:          @blue;
+}
+#network:hover                { background: @surface0; }
+#network.disconnected         { color: @overlay0; }
+
+/* ── Audio ────────────────────────────────────────────────────────────────── */
+#pulseaudio {
+    color:          @lavender;
+}
+#pulseaudio:hover             { background: @surface0; }
+#pulseaudio.muted             { color: @overlay0; }
+
+/* ── Clock (center, slightly larger) ─────────────────────────────────────── */
+#clock-time {
+    font-size:      14px;
+    font-weight:    600;
+    color:          @text;
+    letter-spacing: 0.5px;
+}
+#clock-date {
+    font-size:      12px;
+    color:          @subtext;
+    padding-left:   4px;
+}
+
+/* ── Power button ─────────────────────────────────────────────────────────── */
+#custom-power {
+    color:          @overlay0;
+    font-size:      15px;
+    padding:        0 10px;
+}
 #custom-power:hover {
-    background: linear-gradient(
-        90deg,
-        rgba(217, 83, 79, 0.70) 0%,
-        rgba(217, 83, 79, 0.90) 100%
-    );
-    border-left:  1px solid @g_red;
-    color:        @g_white;
-    padding:      0 26px 0 14px;
-    text-shadow:  0 0 10px rgba(255, 255, 255, 0.60);
-    animation:    none;
-    /* Three-layer glow explosion: tight core, mid halo, soft outer bleed */
-    box-shadow:
-        inset 0  1px 0  rgba(255, 255, 255, 0.18),
-        inset 0 -1px 0  rgba(0,   0,   0,   0.30),
-        0 0  4px  @g_red,
-        0 0 14px  @g_red_glow,
-        0 0 32px  rgba(217, 83, 79, 0.35),
-        0 3px 20px rgba(217, 83, 79, 0.45);
+    background:     alpha(@red, 0.20);
+    color:          @red;
+}
+
+/* ── Tooltips ─────────────────────────────────────────────────────────────── */
+tooltip {
+    background:     @mantle;
+    border:         1px solid @surface1;
+    border-radius:  8px;
+    padding:        6px 10px;
+    color:          @text;
+    font-size:      12px;
+}
+tooltip label {
+    color:          @text;
+}
+
+/* ── Critical pulse animation ─────────────────────────────────────────────── */
+@keyframes pulse {
+    0%   { opacity: 1.0; }
+    50%  { opacity: 0.5; }
+    100% { opacity: 1.0; }
 }

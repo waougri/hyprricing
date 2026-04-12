@@ -1,0 +1,85 @@
+include "keybinds.kdl"
+include "animations.kdl"
+
+input {
+  keyboard {
+
+    xkb {
+      layout "us"
+    }
+
+    numlock
+  }
+
+}
+
+
+output "DP-3" {
+  mode "1920x1080@60"
+  transform "normal"
+  position x=0 y=0
+}
+
+output "HDMI-A-1" {
+  mode "1920x1080@60"
+  transform "normal"
+  position x=1920 y=0
+}
+
+layout {
+  gaps 10
+
+  center-focused-column "never"
+
+  focus-ring {
+    width 2
+    active-color "#6E56AF"
+    inactive-color "#54487A"
+  }
+
+  border {
+    off
+  }
+
+  shadow {
+    on 
+    softness 30
+    spread 5 
+    offset x=0 y=5 
+    color "#DDDFFF"
+  }
+
+}
+
+
+hotkey-overlay {
+  skip-at-startup
+}
+
+
+window-rule {
+  geometry-corner-radius 12 
+  clip-to-geometry true
+}
+
+window-rule {
+  match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+  open-floating true
+}
+
+
+window-rule {
+  match app-id=r#"^org\.keepassxc\.KeePassXC$"#
+  match app-id=r#"^org\.gnome\.World\.Secrets$"#
+
+  block-out-from "screencast"
+}
+
+
+
+
+
+
+spawn-at-startup "waybar"
+spawn-at-startup "wl-clip-persist --clipboard both &"
+screenshot-path "~/screenshots/ from %Y-%m-%d %H-%M-%S.png"
