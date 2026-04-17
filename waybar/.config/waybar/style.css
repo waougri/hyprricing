@@ -1,217 +1,76 @@
-/* ═══════════════════════════════════════════════════════════════════════════
-   zenith · Arch + Niri · Waybar stylesheet
-   Palette: Catppuccin Mocha
-   Font:    JetBrainsMono Nerd Font (icons) + Rubik (text)
-            Install: sudo pacman -S ttf-jetbrains-mono-nerd ttf-rubik
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* openSUSE Branding Variables */
+@define-color os-green #73ba25;
+@define-color os-cyan #35b9ab;
+@define-color alert-red #D9534F;
 
-/* ── Catppuccin Mocha ─────────────────────────────────────────────────────── */
-@define-color base    #1e1e2e;
-@define-color mantle  #181825;
-@define-color crust   #11111b;
-@define-color surface0 #313244;
-@define-color surface1 #45475a;
-@define-color overlay0 #6c7086;
-@define-color text    #cdd6f4;
-@define-color subtext #a6adc8;
-
-@define-color lavender #b4befe;
-@define-color blue     #89b4fa;
-@define-color sapphire #74c7ec;
-@define-color teal     #94e2d5;
-@define-color green    #a6e3a1;
-@define-color yellow   #f9e2af;
-@define-color peach    #fab387;
-@define-color red      #f38ba8;
-@define-color mauve    #cba6f7;
-@define-color pink     #f5c2e7;
-
-/* ── Reset & Root ─────────────────────────────────────────────────────────── */
 * {
-    font-family:    "Rubik", "JetBrainsMono Nerd Font", monospace;
-    font-size:      13px;
-    font-weight:    400;
-    border:         none;
-    border-radius:  0;
-    min-height:     0;
-    padding:        0;
-    margin:         0;
-    box-shadow:     none;
-    text-shadow:    none;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 800;
+    text-shadow: 0px 0px 2px rgba(115, 186, 37, 0.4);
+    border: none;
+    border-radius: 0; /* Strictly no pills */
 }
 
-/* ── Bar ──────────────────────────────────────────────────────────────────── */
 window#waybar {
-    background:     @base;
-    color:          @text;
-    border-radius:  10px;
-    border:         1px solid @surface0;
-    box-shadow:     0 4px 24px alpha(@crust, 0.8);
+    background-color: #000000; /* Pure black */
+    border-bottom: 2px solid @os-green;
+    color: @os-green;
 }
 
-/* Segment separators via transparent padding */
-.modules-left,
-.modules-center,
-.modules-right {
-    padding:        0 4px;
+/* Base module styling: Flat, no borders, no margins */
+#workspaces, #cpu, #memory, #temperature, #clock, #network, #pulseaudio, #custom-cava, #tray {
+    padding: 0 15px;
+    margin: 0;
+    background-color: transparent; /* Let the pure black bleed through */
 }
 
-/* ── Generic module pill ──────────────────────────────────────────────────── */
-#custom-logo,
-#niri-workspaces,
-#niri-window,
-#cpu,
-#memory,
-#temperature,
-#custom-gpu,
-#disk,
-#network,
-#pulseaudio,
-#clock-time,
-#clock-date,
-#custom-power {
-    padding:        0 10px;
-    margin:         4px 2px;
-    border-radius:  6px;
-    color:          @text;
-    background:     transparent;
-    transition:     background 200ms ease, color 200ms ease;
+/* Workspaces Animation */
+#workspaces button {
+    color: @os-cyan;
+    background: transparent;
+    border-radius: 0;
+    padding: 0 8px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* ── Logo ─────────────────────────────────────────────────────────────────── */
-#custom-logo {
-    font-size:      16px;
-    color:          @blue;
-    padding:        0 12px 0 8px;
-    margin-right:   2px;
-}
-#custom-logo:hover {
-    background:     @surface0;
-    color:          @lavender;
+#workspaces button:hover {
+    box-shadow: 0 0 8px @os-cyan;
+    background: rgba(53, 185, 171, 0.1);
 }
 
-/* ── Workspaces ───────────────────────────────────────────────────────────── */
-#niri-workspaces button {
-    padding:        0 5px;
-    margin:         4px 1px;
-    border-radius:  6px;
-    color:          @overlay0;
-    background:     transparent;
-    transition:     all 200ms ease;
-    min-width:      24px;
-}
-#niri-workspaces button:hover {
-    background:     @surface0;
-    color:          @text;
-}
-#niri-workspaces button.active {
-    color:          @blue;
-    background:     @surface0;
-    font-weight:    700;
-}
-#niri-workspaces button.urgent {
-    color:          @red;
-    background:     alpha(@red, 0.15);
+#workspaces button.active {
+    color: @os-green;
+    animation: neon-pulse 1.5s infinite alternate;
 }
 
-/* ── Window title ─────────────────────────────────────────────────────────── */
-#niri-window {
-    color:          @subtext;
-    font-size:      12px;
-    padding:        0 8px;
+/* Custom CSS Keyframe Animations */
+@keyframes neon-pulse {
+    from {
+        text-shadow: 0 0 2px @os-green, 0 0 5px @os-green;
+        box-shadow: inset 0 -2px 0 @os-green;
+    }
+    to {
+        text-shadow: 0 0 5px @os-green, 0 0 10px @os-green;
+        box-shadow: inset 0 -4px 0 @os-green, 0 0 8px rgba(115, 186, 37, 0.3);
+    }
 }
 
-/* ── CPU ──────────────────────────────────────────────────────────────────── */
-#cpu {
-    color:          @sapphire;
-}
-#cpu:hover                    { background: @surface0; }
-#cpu.warning                  { color: @yellow; }
-#cpu.critical                 { color: @red; background: alpha(@red, 0.12); }
-
-/* ── Memory ───────────────────────────────────────────────────────────────── */
-#memory {
-    color:          @teal;
-}
-#memory:hover                 { background: @surface0; }
-#memory.warning               { color: @yellow; }
-#memory.critical              { color: @red; background: alpha(@red, 0.12); }
-
-/* ── Temperature ──────────────────────────────────────────────────────────── */
-#temperature {
-    color:          @green;
-}
-#temperature:hover            { background: @surface0; }
-#temperature.critical         { color: @red; background: alpha(@red, 0.12); animation: pulse 1.5s ease-in-out infinite; }
-
-/* ── GPU ──────────────────────────────────────────────────────────────────── */
-#custom-gpu {
-    color:          @mauve;
-}
-#custom-gpu:hover             { background: @surface0; }
-
-/* ── Disk ─────────────────────────────────────────────────────────────────── */
-#disk {
-    color:          @peach;
-}
-#disk:hover                   { background: @surface0; }
-#disk.warning                 { color: @yellow; }
-#disk.critical                { color: @red; background: alpha(@red, 0.12); }
-
-/* ── Network ──────────────────────────────────────────────────────────────── */
-#network {
-    color:          @blue;
-}
-#network:hover                { background: @surface0; }
-#network.disconnected         { color: @overlay0; }
-
-/* ── Audio ────────────────────────────────────────────────────────────────── */
-#pulseaudio {
-    color:          @lavender;
-}
-#pulseaudio:hover             { background: @surface0; }
-#pulseaudio.muted             { color: @overlay0; }
-
-/* ── Clock (center, slightly larger) ─────────────────────────────────────── */
-#clock-time {
-    font-size:      14px;
-    font-weight:    600;
-    color:          @text;
-    letter-spacing: 0.5px;
-}
-#clock-date {
-    font-size:      12px;
-    color:          @subtext;
-    padding-left:   4px;
+/* Warnings and Errors */
+#temperature.critical, #memory.critical {
+    color: #000000;
+    background-color: @alert-red;
+    animation: flash 1s steps(2, end) infinite;
 }
 
-/* ── Power button ─────────────────────────────────────────────────────────── */
-#custom-power {
-    color:          @overlay0;
-    font-size:      15px;
-    padding:        0 10px;
-}
-#custom-power:hover {
-    background:     alpha(@red, 0.20);
-    color:          @red;
+@keyframes flash {
+    0% { background-color: @alert-red; color: #fff; }
+    50% { background-color: transparent; color: @alert-red; }
+    100% { background-color: @alert-red; color: #fff; }
 }
 
-/* ── Tooltips ─────────────────────────────────────────────────────────────── */
-tooltip {
-    background:     @mantle;
-    border:         1px solid @surface1;
-    border-radius:  8px;
-    padding:        6px 10px;
-    color:          @text;
-    font-size:      12px;
-}
-tooltip label {
-    color:          @text;
-}
-
-/* ── Critical pulse animation ─────────────────────────────────────────────── */
-@keyframes pulse {
-    0%   { opacity: 1.0; }
-    50%  { opacity: 0.5; }
-    100% { opacity: 1.0; }
+/* Network hover effect */
+#network:hover {
+    background-color: @os-cyan;
+    color: #000000;
 }

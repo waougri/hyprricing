@@ -1,250 +1,93 @@
 {
-    // ═══════════════════════════════════════════════════════════════════════
-    // Arch + Niri Waybar Config
-    // Machine: zenith  |  Ryzen 9 7900X  |  RX 7700 XT  |  Dual 1080p
-    // No battery (desktop). Remove or add modules as needed.
-    //
-    // BEFORE YOU START – verify two sysfs paths on your machine:
-    //   GPU busy:   ls /sys/class/drm/card*/device/gpu_busy_percent
-    //               card0 = RX 7700 XT (discrete), card1 = Raphael iGPU
-    //               If that's backwards, swap 0↔1 in custom/gpu below.
-    //   CPU temp:   cat /sys/class/hwmon/hwmon0/name  → should say "k10temp"
-    //               If the number differs, fix hwmon-path in "temperature".
-    // ═══════════════════════════════════════════════════════════════════════
-
-    "layer":        "top",
-    "position":     "top",
-    "height":       36,
-    "margin-top":   6,
-    "margin-left":  8,
-    "margin-right": 8,
-    "spacing":      0,
-    "exclusive":    true,
-    "passthrough":  false,
-    "gtk-layer-shell": true,
-
-
-    // ── Module layout ───────────────────────────────────────────────────────
+    "layer": "top",
+    "position": "top",
+    "height": 38,
+    "spacing": 0,
+    "exclusive": true,
     "modules-left": [
-        "custom/logo",
-        "niri/workspaces",
-        "niri/window"
-    ],
-
-    "modules-center": [
-        "clock#time",
-        "clock#date"
-    ],
-
-    "modules-right": [
+        "hyprland/workspaces",
         "cpu",
         "memory",
-        "temperature",
-        "custom/gpu",
-        "disk",
+        "temperature"
+    ],
+    "modules-center": [
+        "clock"
+    ],
+    "modules-right": [
         "network",
         "pulseaudio",
-        "custom/power"
+        "custom/cava",
+        "tray"
     ],
 
-
-    // ── Logo ────────────────────────────────────────────────────────────────
-    "custom/logo": {
-        "format":       "",
-        "tooltip":      false,
-        "on-click":     "rofi -show drun"
-    },
-
-
-    // ── Niri Workspaces ─────────────────────────────────────────────────────
-    // Niri workspaces are per-output and named (numeric by default).
-    // format-icons keys match workspace *name* or the special keys below.
-    "niri/workspaces": {
-        "format":       "{icon}",
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "on-click": "activate",
         "format-icons": {
-            "active":   "󰮯",
-            "default":  "󰊠",
-            "urgent":   "󰗖",
-            "empty":    "󰝨"
+            "active": "",
+            "default": "",
+            "empty": ""
         },
-        "on-click":     "activate",
-        "on-scroll-up":   "niri msg action focus-workspace-up",
-        "on-scroll-down": "niri msg action focus-workspace-down"
-    },
-
-
-    // ── Active Window Title ─────────────────────────────────────────────────
-    "niri/window": {
-        "format":       "{}",
-        "max-length":   50,
-        "separate-outputs": true,
-        "rewrite": {
-            "(.*) — Mozilla Firefox":   "󰈹  $1",
-            "(.*) — floorp":            "󰈹  $1",
-            "(.*) - fish":              "  $1",
-            "(.*) - zsh":               "  $1",
-            "(.*) - nvim":              "󰛔  $1",
-            "(.*) - Neovim":            "󰛔  $1",
-            "Alacritty":                "  Terminal",
-            "kitty":                    "  Terminal",
-            "foot":                     "  Terminal",
-            "":                         "󰄉  Desktop"
+        "persistent-workspaces": {
+            "*": 5
         }
     },
 
-
-    // ── CPU ─────────────────────────────────────────────────────────────────
-    // 7900X: 24 threads. Tooltip shows per-core if waybar ≥ 0.10.
     "cpu": {
-        "format":           " {usage}%",
-        "format-alt":       " {load}",
-        "interval":         2,
-        "tooltip":          true,
-        "tooltip-format":   "CPU  {usage}%  |  {avg_frequency} GHz",
+        "interval": 1,
+        "format": "  CPU [{icon0}{icon1}{icon2}{icon3}] {usage:>2}%",
+        "format-icons": [" ", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+        "on-click": "kitty -e btop"
+    },
+
+    "memory": {
+        "interval": 1,
+        "format": "  RAM [{used:0.1f}G/{total:0.1f}G]",
         "states": {
-            "warning":  70,
+            "warning": 70,
             "critical": 90
         },
-        "on-click":     "foot --title btop btop",
-        "on-right-click": "foot --title htop htop"
+        "on-click": "kitty -e btop"
     },
 
-
-    // ── Memory ──────────────────────────────────────────────────────────────
-    "memory": {
-        "format":           "󰍛 {used:0.1f}G",
-        "format-alt":       "󰍛 {percentage}%",
-        "interval":         4,
-        "tooltip":          true,
-        "tooltip-format":   "RAM  {used:0.1f} / {total:0.1f} GiB  ({percentage}%)\nSwap {swapUsed:0.1f} / {swapTotal:0.1f} GiB",
-        "states": {
-            "warning":  75,
-            "critical": 92
-        },
-        "on-click":     "foot --title btop btop"
-    },
-
-
-    // ── CPU Temperature (k10temp / Ryzen 7000 Tctl) ─────────────────────────
-    // Tctl is temp1 on k10temp. Verify: cat /sys/class/hwmon/hwmon0/temp1_label
-    // Should print "Tctl". If hwmon index is wrong, adjust the path.
     "temperature": {
-        "hwmon-path":           "/sys/class/hwmon/hwmon0/temp1_input",
-        "critical-threshold":   85,
-        "interval":             4,
-        "format":               "{icon} {temperatureC}°",
-        "format-critical":      "󰈸 {temperatureC}°",
-        "format-icons":         ["󱃃", "󰔏", "󰈸"],
-        "tooltip":              true,
-        "tooltip-format":       "CPU  {temperatureC}°C / {temperatureF}°F"
+        "hwmon-path": "/sys/class/hwmon/hwmon1/temp1_input",
+        "critical-threshold": 80,
+        "format": "{icon} {temperatureC}°C",
+        "format-icons": ["", "", ""]
     },
 
-
-    // ── GPU (AMD RX 7700 XT via sysfs) ──────────────────────────────────────
-    // card0 should be the discrete RX 7700 XT on your B650 board.
-    // If you see 0% constantly, swap to card1 and verify with:
-    //   watch cat /sys/class/drm/card0/device/gpu_busy_percent
-    "custom/gpu": {
-        "exec":         "gpu=/sys/class/drm/card0/device/gpu_busy_percent; vram=/sys/class/drm/card0/device/mem_info_vram_used; [ -f $gpu ] && printf '%d%%' $(cat $gpu) || echo '?'",
-        "interval":     2,
-        "format":       "󰢮 {}",
-        "tooltip":      true,
-        "tooltip-format": "RX 7700 XT  busy: {}",
-        "return-type":  ""
+    "clock": {
+        "interval": 1,
+        "format": " {:%H:%M:%S   %Y-%m-%d}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>"
     },
 
-
-    // ── Disk ────────────────────────────────────────────────────────────────
-    // Single 2 TiB NVMe (btrfs). You have 1.72 TiB usable.
-    "disk": {
-        "format":           "󰋊 {percentage_used}%",
-        "path":             "/",
-        "interval":         60,
-        "tooltip":          true,
-        "tooltip-format":   "{used} / {total}  ({percentage_used}% used)\nFree: {free}",
-        "states": {
-            "warning":  70,
-            "critical": 88
-        },
-        "on-click":     "foot --title ncdu ncdu -x /"
-    },
-
-
-    // ── Network ─────────────────────────────────────────────────────────────
-    // enp10s0 = RTL8125 2.5GbE  (currently up at 1 Gbps)
-    // wlan0   = RTL8852CE ax    (currently down)
     "network": {
-        "interface":                "enp10s0",
-        "interval":                 5,
-        "format-ethernet":          "󰈀 {bandwidthDownBytes}↓ {bandwidthUpBytes}↑",
-        "format-wifi":              "  {signalStrength}%",
-        "format-disconnected":      "󰖪 offline",
-        "format-linked":            "󰈁 no IP",
-        "tooltip":                  true,
-        "tooltip-format-ethernet":  "enp10s0  {ipaddr}/{cidr}\nGW: {gwaddr}\nSpeed: {bandwidthDownBytes}↓  {bandwidthUpBytes}↑",
-        "tooltip-format-wifi":      "SSID: {essid}  ({signalStrength}%)\nIP: {ipaddr}  GW: {gwaddr}",
-        "tooltip-format-disconnected": "No active connection",
-        "on-click":                 "foot --title nmtui nmtui"
+        "interval": 1,
+        "format-wifi": "  {essid} [{bandwidthDownBytes:>3}  | {bandwidthUpBytes:>3} ]",
+        "format-ethernet": "󰈀  ETH [{bandwidthDownBytes:>3}  | {bandwidthUpBytes:>3} ]",
+        "format-disconnected": "⚠  Offline",
+        "tooltip-format": "{ifname} via {gwaddr}"
     },
 
-
-    // ── Audio (PipeWire via pulseaudio module) ───────────────────────────────
     "pulseaudio": {
-        "format":                   "{icon} {volume}%",
-        "format-muted":             "󰝟 muted",
-        "format-bluetooth":         "󰂯 {volume}%",
-        "format-bluetooth-muted":   "󰂲 muted",
-        "format-source":            " {volume}%",
-        "format-source-muted":      "",
+        "format": "{icon} {volume}%",
+        "format-muted": " Muted",
         "format-icons": {
-            "headphone":    "󰋋",
-            "headset":      "󰋎",
-            "default":      ["󰕿", "󰖀", "󰕾"]
+            "default": ["", "", ""]
         },
-        "scroll-step":      2.0,
-        "on-click":         "pavucontrol",
-        "on-right-click":   "pactl set-sink-mute @DEFAULT_SINK@ toggle",
-        "on-scroll-up":     "pactl set-sink-volume @DEFAULT_SINK@ +2%",
-        "on-scroll-down":   "pactl set-sink-volume @DEFAULT_SINK@ -2%",
-        "tooltip":          true,
-        "tooltip-format":   "{volume}%  –  {desc}"
+        "on-click": "pavucontrol"
     },
 
-
-    // ── Clocks ──────────────────────────────────────────────────────────────
-    "clock#time": {
-        "format":       "󱑊 {:%H:%M:%S}",
-        "interval":     1,
-        "tooltip":      true,
-        "tooltip-format": "<big>{:%A, %d %B %Y}</big>\n<tt><small>{calendar}</small></tt>",
-        "calendar": {
-            "mode":           "month",
-            "on-scroll":      1,
-            "on-click-right": "mode",
-            "format": {
-                "months":   "<span color='#B48BFF'><b>{}</b></span>",
-                "days":     "<span color='#CDD6F4'>{}</span>",
-                "weeks":    "<span color='#A6E3A1'><b>W{}</b></span>",
-                "weekdays": "<span color='#89B4FA'><b>{}</b></span>",
-                "today":    "<span color='#A6E3A1'><b><u>{}</u></b></span>"
-            }
-        }
+    "custom/cava": {
+        "exec": "cava -p ~/.config/waybar/cava.conf | sed -u 's/ //g; s/0/ /g; s/1/▂/g; s/2/▃/g; s/3/▄/g; s/4/▅/g; s/5/▆/g; s/6/▇/g; s/7/█/g;'",
+        "format": "{}",
+        "tooltip": false
     },
 
-    "clock#date": {
-        "format":       "󰃭 {:%a %d %b}",
-        "interval":     60,
-        "tooltip":      true,
-        "tooltip-format": "ISO Week {:%V · %Y}"
-    },
-
-
-    // ── Power ────────────────────────────────────────────────────────────────
-    "custom/power": {
-        "format":           "⏻",
-        "tooltip":          false,
-        "on-click":         "wlogout --protocol layer-shell",
-        "on-right-click":   "systemctl suspend"
+    "tray": {
+        "icon-size": 18,
+        "spacing": 10
     }
 }
-

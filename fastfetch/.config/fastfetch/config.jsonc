@@ -8,7 +8,7 @@
   // ── Logo ──────────────────────────────────────────────────────────────────
   "logo": {
     "type": "auto",
-    "source": "arch",
+    "source": "tumbleweed",
     "padding": {
       "top": 1,
       "left": 2,
