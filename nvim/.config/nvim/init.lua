@@ -93,11 +93,4 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	end,
 })
 
-vim.api.nvim_create_autocmd({ "FileType" }, {
-	group = vim.api.nvim_create_augroup("RemoveAFormatOption", { clear = true }),
-	pattern = { "*" },
-	callback = function()
-		-- Use setlocal to only affect the current buffer
-		vim.opt_local.fo:remove("a")
-	end,
-})
+vim.opt.formatoptions:remove("a")

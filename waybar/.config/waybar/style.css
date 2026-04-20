@@ -1,76 +1,116 @@
-/* openSUSE Branding Variables */
-@define-color os-green #73ba25;
-@define-color os-cyan #35b9ab;
-@define-color alert-red #D9534F;
-
 * {
-    font-family: "JetBrainsMono Nerd Font", monospace;
-    font-size: 13px;
-    font-weight: 800;
-    text-shadow: 0px 0px 2px rgba(115, 186, 37, 0.4);
-    border: none;
-    border-radius: 0; /* Strictly no pills */
+  min-height: 0;
+  min-width: 0;
+  font-family: Lexend, "JetBrainsMono NFP";
+  font-size: 16px;
+  font-weight: 600;
 }
 
 window#waybar {
-    background-color: #000000; /* Pure black */
-    border-bottom: 2px solid @os-green;
-    color: @os-green;
+  transition-property: background-color;
+  transition-duration: 0.5s;
+  /* background-color: #1e1e2e; */
+  /* background-color: #181825; */
+  background-color: #11111b;
+  /* background-color: rgba(24, 24, 37, 0.6); */
 }
 
-/* Base module styling: Flat, no borders, no margins */
-#workspaces, #cpu, #memory, #temperature, #clock, #network, #pulseaudio, #custom-cava, #tray {
-    padding: 0 15px;
-    margin: 0;
-    background-color: transparent; /* Let the pure black bleed through */
-}
-
-/* Workspaces Animation */
 #workspaces button {
-    color: @os-cyan;
-    background: transparent;
-    border-radius: 0;
-    padding: 0 8px;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  padding: 0.3rem 0.6rem;
+  margin: 0.4rem 0.25rem;
+  border-radius: 6px;
+  /* background-color: #181825; */
+  background-color: #1e1e2e;
+  color: #cdd6f4;
 }
 
 #workspaces button:hover {
-    box-shadow: 0 0 8px @os-cyan;
-    background: rgba(53, 185, 171, 0.1);
+  color: #1e1e2e;
+  background-color: #cdd6f4;
 }
 
 #workspaces button.active {
-    color: @os-green;
-    animation: neon-pulse 1.5s infinite alternate;
+  background-color: #1e1e2e;
+  color: #89b4fa;
 }
 
-/* Custom CSS Keyframe Animations */
-@keyframes neon-pulse {
-    from {
-        text-shadow: 0 0 2px @os-green, 0 0 5px @os-green;
-        box-shadow: inset 0 -2px 0 @os-green;
-    }
-    to {
-        text-shadow: 0 0 5px @os-green, 0 0 10px @os-green;
-        box-shadow: inset 0 -4px 0 @os-green, 0 0 8px rgba(115, 186, 37, 0.3);
-    }
+#workspaces button.urgent {
+  background-color: #1e1e2e;
+  color: #f38ba8;
 }
 
-/* Warnings and Errors */
-#temperature.critical, #memory.critical {
-    color: #000000;
-    background-color: @alert-red;
-    animation: flash 1s steps(2, end) infinite;
+#clock,
+#pulseaudio,
+#custom-logo,
+#custom-power,
+#custom-spotify,
+#custom-notification,
+#cpu,
+#tray,
+#memory,
+#window,
+#mpris {
+  padding: 0.3rem 0.6rem;
+  margin: 0.4rem 0.25rem;
+  border-radius: 6px;
+  /* background-color: #181825; */
+  background-color: #1e1e2e;
 }
 
-@keyframes flash {
-    0% { background-color: @alert-red; color: #fff; }
-    50% { background-color: transparent; color: @alert-red; }
-    100% { background-color: @alert-red; color: #fff; }
+#mpris.playing {
+  color: #a6e3a1;
 }
 
-/* Network hover effect */
-#network:hover {
-    background-color: @os-cyan;
-    color: #000000;
+#mpris.paused {
+  color: #9399b2;
+}
+
+#custom-sep {
+  padding: 0px;
+  color: #585b70;
+}
+
+window#waybar.empty #window {
+  background-color: transparent;
+}
+
+#cpu {
+  color: #94e2d5;
+}
+
+#memory {
+  color: #cba6f7;
+}
+
+#clock {
+  color: #74c7ec;
+}
+
+#clock.simpleclock {
+  color: #89b4fa;
+}
+
+#window {
+  color: #cdd6f4;
+}
+
+#pulseaudio {
+  color: #b4befe;
+}
+
+#pulseaudio.muted {
+  color: #a6adc8;
+}
+
+#custom-logo {
+  color: #89b4fa;
+}
+
+#custom-power {
+  color: #f38ba8;
+}
+
+tooltip {
+  background-color: #181825;
+  border: 2px solid #89b4fa;
 }

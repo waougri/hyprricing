@@ -14,6 +14,11 @@
 # =============================================================================
 #  XDG
 # =============================================================================
+export DOTFILES="$HOME/dev/src/dotfiles"
+if [[ -z "$DOTFILES" ]] then
+  echo "DOTFILES is not set, don't forget to set it."
+fi
+
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
@@ -71,6 +76,7 @@ path=(
   "${GOPATH}/bin"
   "${XDG_DATA_HOME}/npm/bin"
   "/usr/local/bin"
+  "$HOME/dev/bin/"
   $path
 )
 typeset -U path

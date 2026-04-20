@@ -205,7 +205,7 @@ setup_server("lua_ls", {
 })
 
 setup_server("clangd", {
-	cmd = { "/usr/sbin/clangd" },
+	cmd = { vim.fn.exepath("clangd") },
 	settings = {
 		clangd = {
 			InlayHints = {
@@ -219,7 +219,7 @@ setup_server("clangd", {
 })
 
 setup_server("rust_analyzer", {
-	cmd = { "/usr/sbin/rust-analyzer" },
+	cmd = { vim.fn.exepath("rust_analyzer") },
 	settings = {
 		["rust-analyzer"] = {
 			inlayHints = {
@@ -232,8 +232,8 @@ setup_server("rust_analyzer", {
 	},
 })
 
-setup_server("ts_ls", {
-	cmd = { "/usr/sbin/typescript-language-server", "--stdio" },
+setup_server("vtsls", {
+	cmd = { vim.fn.exepath("vtsls"), "--stdio" },
 	settings = {
 		typescript = {
 			inlayHints = {
