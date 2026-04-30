@@ -1199,3 +1199,335 @@ hl("@markup.raw.block.markdown", { fg = c.fg })
 hl("@markup.link.label.markdown", { fg = c.cyan, bold = true })
 hl("@markup.link.url.markdown", { fg = c.blue_d, underline = true, italic = true })
 hl("@punctuation.special.markdown", { fg = c.pu3 })
+
+-- ╔══════════════════════════════════════════════════════════════════════════╗
+-- ║  GENTOO SYNTAX COLORS — JS / TS / CSS / Svelte                         ║
+-- ║  ~/.config/nvim/after/plugin/svelte_hl.lua                             ║
+-- ╚══════════════════════════════════════════════════════════════════════════╝
+--
+-- Gentoo palette:
+--   #0D0A17  bg deepest     #1A1628  bg alt
+--   #54487A  purple dark    #61538D  purple mid
+--   #6E56AF  purple bright  #8A72C8  purple pale
+--   #A994E0  purple light   #C4B0F0  purple whisper
+--   #DDDAEC  grey fg        #DDDFFF  white-blue fg
+--   #73D216  green          #4A8A0E  green dim
+--   #D9534F  red            #C97B30  orange
+--   #D4B860  yellow         #4EB8C8  teal
+
+local hi = function(g, o)
+	vim.api.nvim_set_hl(0, g, o)
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════
+--  JAVASCRIPT / TYPESCRIPT — KEYWORDS
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- Declaration keywords: const let var
+hi("@keyword.declaration", { fg = "#6E56AF", bold = true })
+hi("@keyword.declaration.javascript", { fg = "#6E56AF", bold = true })
+hi("@keyword.declaration.typescript", { fg = "#6E56AF", bold = true })
+
+-- const specifically — make it pop more than let
+hi("@keyword.storage", { fg = "#8A72C8", bold = true })
+
+-- Control flow: if else switch case break continue return
+hi("@keyword.conditional", { fg = "#A994E0", bold = true })
+hi("@keyword.conditional.javascript", { fg = "#A994E0", bold = true })
+hi("@keyword.conditional.typescript", { fg = "#A994E0", bold = true })
+
+-- Loops: for while do
+hi("@keyword.repeat", { fg = "#A994E0", bold = true })
+hi("@keyword.repeat.javascript", { fg = "#A994E0", bold = true })
+hi("@keyword.repeat.typescript", { fg = "#A994E0", bold = true })
+
+-- Return keyword
+hi("@keyword.return", { fg = "#C4B0F0", bold = true })
+hi("@keyword.return.javascript", { fg = "#C4B0F0", bold = true })
+hi("@keyword.return.typescript", { fg = "#C4B0F0", bold = true })
+
+-- import export default from as
+hi("@keyword.import", { fg = "#73D216", bold = true })
+hi("@keyword.import.javascript", { fg = "#73D216", bold = true })
+hi("@keyword.import.typescript", { fg = "#73D216", bold = true })
+hi("@include", { fg = "#73D216", bold = true })
+
+-- async await
+hi("@keyword.coroutine", { fg = "#D4B860", bold = true })
+hi("@keyword.coroutine.javascript", { fg = "#D4B860", bold = true })
+hi("@keyword.coroutine.typescript", { fg = "#D4B860", bold = true })
+
+-- typeof instanceof void delete in of new throw
+hi("@keyword.operator", { fg = "#8A72C8" })
+hi("@keyword.operator.javascript", { fg = "#8A72C8" })
+hi("@keyword.operator.typescript", { fg = "#8A72C8" })
+
+-- try catch finally
+hi("@keyword.exception", { fg = "#D9534F", bold = true })
+hi("@keyword.exception.javascript", { fg = "#D9534F", bold = true })
+hi("@keyword.exception.typescript", { fg = "#D9534F", bold = true })
+
+-- class extends implements
+hi("@keyword.class", { fg = "#61538D", bold = true })
+hi("@keyword", { fg = "#6E56AF" })
+hi("@keyword.javascript", { fg = "#6E56AF" })
+hi("@keyword.typescript", { fg = "#6E56AF" })
+
+-- TS-specific: type interface enum namespace declare abstract
+hi("@keyword.type", { fg = "#61538D", bold = true })
+hi("@keyword.type.typescript", { fg = "#61538D", bold = true })
+hi("@keyword.modifier", { fg = "#61538D", italic = true }) -- public private protected readonly
+
+-- ═══════════════════════════════════════════════════════════════════════════
+--  JAVASCRIPT / TYPESCRIPT — IDENTIFIERS
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- Regular variables
+hi("@variable", { fg = "#DDDAEC" })
+hi("@variable.javascript", { fg = "#DDDAEC" })
+hi("@variable.typescript", { fg = "#DDDAEC" })
+
+-- Parameters
+hi("@variable.parameter", { fg = "#C4B0F0", italic = true })
+hi("@variable.parameter.javascript", { fg = "#C4B0F0", italic = true })
+hi("@variable.parameter.typescript", { fg = "#C4B0F0", italic = true })
+
+-- Object members / properties
+hi("@variable.member", { fg = "#A994E0" })
+hi("@variable.member.javascript", { fg = "#A994E0" })
+hi("@variable.member.typescript", { fg = "#A994E0" })
+
+-- Builtin vars: this super arguments globalThis
+hi("@variable.builtin", { fg = "#8A72C8", italic = true })
+hi("@variable.builtin.javascript", { fg = "#8A72C8", italic = true })
+hi("@variable.builtin.typescript", { fg = "#8A72C8", italic = true })
+
+-- Functions
+hi("@function", { fg = "#73D216", bold = true })
+hi("@function.javascript", { fg = "#73D216", bold = true })
+hi("@function.typescript", { fg = "#73D216", bold = true })
+hi("@function.call", { fg = "#73D216" })
+hi("@function.call.javascript", { fg = "#73D216" })
+hi("@function.call.typescript", { fg = "#73D216" })
+hi("@function.builtin", { fg = "#4EB8C8", bold = true })
+hi("@function.builtin.javascript", { fg = "#4EB8C8", bold = true })
+hi("@function.builtin.typescript", { fg = "#4EB8C8", bold = true })
+hi("@function.method", { fg = "#73D216" })
+hi("@function.method.call", { fg = "#73D216" })
+
+-- Arrow functions get italic
+hi("@function.arrow", { fg = "#73D216", italic = true })
+hi("@function.arrow.javascript", { fg = "#73D216", italic = true })
+
+-- Constructors
+hi("@constructor", { fg = "#61538D", bold = true })
+hi("@constructor.javascript", { fg = "#61538D", bold = true })
+hi("@constructor.typescript", { fg = "#61538D", bold = true })
+
+-- Type names (TS)
+hi("@type", { fg = "#61538D" })
+hi("@type.typescript", { fg = "#61538D" })
+hi("@type.builtin", { fg = "#54487A", italic = true })
+hi("@type.builtin.typescript", { fg = "#54487A", italic = true })
+hi("@type.definition", { fg = "#61538D", bold = true })
+
+-- Property access: obj.PROP
+hi("@property", { fg = "#A994E0" })
+hi("@property.javascript", { fg = "#A994E0" })
+hi("@property.typescript", { fg = "#A994E0" })
+
+-- ═══════════════════════════════════════════════════════════════════════════
+--  JAVASCRIPT / TYPESCRIPT — LITERALS
+-- ═══════════════════════════════════════════════════════════════════════════
+hi("@string", { fg = "#4A8A0E" })
+hi("@string.javascript", { fg = "#4A8A0E" })
+hi("@string.typescript", { fg = "#4A8A0E" })
+hi("@string.special", { fg = "#73D216" }) -- template literal
+hi("@string.special.javascript", { fg = "#73D216" }) -- `${expr}`
+hi("@string.regex", { fg = "#C97B30" })
+hi("@string.regex.javascript", { fg = "#C97B30" })
+hi("@string.escape", { fg = "#4EB8C8" })
+
+hi("@number", { fg = "#D4B860" })
+hi("@number.javascript", { fg = "#D4B860" })
+hi("@number.typescript", { fg = "#D4B860" })
+hi("@number.float", { fg = "#D4B860" })
+
+hi("@boolean", { fg = "#8A72C8", bold = true })
+hi("@boolean.javascript", { fg = "#8A72C8", bold = true })
+hi("@boolean.typescript", { fg = "#8A72C8", bold = true })
+
+hi("@constant", { fg = "#C4B0F0" })
+hi("@constant.javascript", { fg = "#C4B0F0" })
+hi("@constant.typescript", { fg = "#C4B0F0" })
+hi("@constant.builtin", { fg = "#8A72C8", italic = true }) -- null undefined NaN Infinity
+hi("@constant.builtin.javascript", { fg = "#8A72C8", italic = true })
+hi("@constant.builtin.typescript", { fg = "#8A72C8", italic = true })
+
+hi("@comment", { fg = "#54487A", italic = true })
+hi("@comment.javascript", { fg = "#54487A", italic = true })
+hi("@comment.typescript", { fg = "#54487A", italic = true })
+hi("@comment.documentation", { fg = "#61538D", italic = true }) -- JSDoc
+
+-- ═══════════════════════════════════════════════════════════════════════════
+--  JAVASCRIPT / TYPESCRIPT — OPERATORS & PUNCTUATION
+-- ═══════════════════════════════════════════════════════════════════════════
+hi("@operator", { fg = "#6E56AF" })
+hi("@operator.javascript", { fg = "#6E56AF" })
+hi("@operator.typescript", { fg = "#6E56AF" })
+
+hi("@punctuation.bracket", { fg = "#61538D" })
+hi("@punctuation.bracket.javascript", { fg = "#61538D" })
+hi("@punctuation.bracket.typescript", { fg = "#61538D" })
+hi("@punctuation.delimiter", { fg = "#54487A" })
+hi("@punctuation.delimiter.javascript", { fg = "#54487A" })
+hi("@punctuation.delimiter.typescript", { fg = "#54487A" })
+hi("@punctuation.special", { fg = "#6E56AF", bold = true }) -- template ${
+hi("@punctuation.special.javascript", { fg = "#6E56AF", bold = true })
+
+-- ═══════════════════════════════════════════════════════════════════════════
+--  IMPORTS — module path string gets a different shade
+-- ═══════════════════════════════════════════════════════════════════════════
+hi("@string.special.path", { fg = "#73D216", underline = true })
+hi("@string.special.path.javascript", { fg = "#73D216", underline = true })
+hi("@string.special.path.typescript", { fg = "#73D216", underline = true })
+hi("@module", { fg = "#73D216" })
+hi("@module.javascript", { fg = "#73D216" })
+hi("@module.typescript", { fg = "#73D216" })
+hi("@namespace", { fg = "#61538D" })
+
+-- ═══════════════════════════════════════════════════════════════════════════
+--  CSS — EVERYTHING
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- Selectors
+hi("@selector.css", { fg = "#6E56AF", bold = true })
+hi("@type.css", { fg = "#6E56AF", bold = true }) -- element selectors: div, span, p
+hi("@type.tag.css", { fg = "#6E56AF", bold = true })
+
+-- Class and ID selectors
+hi("@type.selector.css", { fg = "#8A72C8", bold = true })
+hi("@string.selector.css", { fg = "#A994E0" })
+
+-- Properties: color, background, font-size etc.
+hi("@property.css", { fg = "#A994E0" })
+hi("@property.id.css", { fg = "#C4B0F0", bold = true })
+hi("@property.class.css", { fg = "#8A72C8" })
+
+-- Values
+hi("@string.css", { fg = "#4A8A0E" })
+hi("@number.css", { fg = "#D4B860" })
+hi("@float.css", { fg = "#D4B860" })
+hi("@number.percentage.css", { fg = "#D4B860", italic = true })
+
+-- Units: px em rem vh vw etc.
+hi("@keyword.unit.css", { fg = "#C97B30" })
+hi("@keyword.css", { fg = "#6E56AF", italic = true }) -- @media @keyframes @import
+
+-- Color values: #hex, rgb(), hsl()
+hi("@constant.css", { fg = "#73D216" })
+hi("@function.css", { fg = "#4EB8C8" }) -- rgb() calc() var() etc.
+hi("@variable.css", { fg = "#C4B0F0", italic = true }) -- --custom-property
+
+-- Pseudo-classes and pseudo-elements: :hover ::before
+hi("@type.pseudo.css", { fg = "#61538D", italic = true })
+
+-- Important / At-rules
+hi("@keyword.important.css", { fg = "#D9534F", bold = true })
+
+-- Punctuation
+hi("@punctuation.delimiter.css", { fg = "#54487A" })
+hi("@punctuation.bracket.css", { fg = "#61538D" })
+
+-- Comments
+hi("@comment.css", { fg = "#54487A", italic = true })
+
+-- ═══════════════════════════════════════════════════════════════════════════
+--  HTML (shared with Svelte templates)
+-- ═══════════════════════════════════════════════════════════════════════════
+hi("@tag", { fg = "#61538D", bold = true })
+hi("@tag.html", { fg = "#61538D", bold = true })
+hi("@tag.delimiter", { fg = "#54487A" })
+hi("@tag.delimiter.html", { fg = "#54487A" })
+hi("@tag.attribute", { fg = "#DDDAEC" })
+hi("@tag.attribute.html", { fg = "#DDDAEC" })
+hi("@tag.attribute.name.html", { fg = "#A994E0" }) -- attribute key
+hi("@string.html", { fg = "#4A8A0E" }) -- attribute value
+
+-- ═══════════════════════════════════════════════════════════════════════════
+--  SVELTE — DIRECTIVES & CONTROL FLOW
+-- ═══════════════════════════════════════════════════════════════════════════
+hi("@tag.svelte", { fg = "#6E56AF", bold = true })
+hi("@tag.delimiter.svelte", { fg = "#54487A" })
+hi("@tag.attribute.svelte", { fg = "#DDDAEC" })
+hi("@tag.attribute.name.svelte", { fg = "#A994E0", italic = true })
+hi("@tag.builtin.svelte", { fg = "#73D216", bold = true, italic = true }) -- <svelte:*>
+
+-- class:active  bind:value  on:click  use:action  let:item
+hi("@attribute.svelte", { fg = "#61538D", italic = true })
+hi("@keyword.directive.on.svelte", { fg = "#D9534F", bold = true })
+hi("@keyword.directive.bind.svelte", { fg = "#6E56AF", bold = true })
+hi("@keyword.directive.use.svelte", { fg = "#73D216", bold = true })
+hi("@keyword.directive.transition.svelte", { fg = "#8A72C8", italic = true })
+hi("@keyword.directive.animate.svelte", { fg = "#8A72C8", italic = true })
+hi("@keyword.directive.class.svelte", { fg = "#61538D", italic = true })
+hi("@keyword.directive.let.svelte", { fg = "#A994E0", italic = true })
+
+-- {#if} {#each} {#await} {#key} {:else} {/if}
+hi("@keyword.control.svelte", { fg = "#6E56AF", bold = true })
+hi("@keyword.control.end.svelte", { fg = "#54487A", bold = true })
+hi("@keyword.control.else.svelte", { fg = "#61538D", bold = true })
+
+-- { expressions }
+hi("@punctuation.special.svelte", { fg = "#6E56AF", bold = true })
+hi("@embedded.svelte", { fg = "#DDDAEC" })
+
+-- $: reactive, $store references
+hi("@label.svelte", { fg = "#D9534F", bold = true })
+hi("@variable.svelte_store.svelte", { fg = "#8A72C8", italic = true })
+
+-- ═══════════════════════════════════════════════════════════════════════════
+--  LEGACY / FALLBACK  (non-treesitter or partial parsers)
+-- ═══════════════════════════════════════════════════════════════════════════
+hi("Keyword", { fg = "#6E56AF", bold = true })
+hi("Statement", { fg = "#6E56AF" })
+hi("Conditional", { fg = "#A994E0", bold = true })
+hi("Repeat", { fg = "#A994E0", bold = true })
+hi("Include", { fg = "#73D216", bold = true })
+hi("Define", { fg = "#73D216" })
+hi("StorageClass", { fg = "#8A72C8", bold = true })
+hi("Structure", { fg = "#61538D", bold = true })
+hi("Type", { fg = "#61538D" })
+hi("TypeDef", { fg = "#61538D", bold = true })
+hi("Function", { fg = "#73D216", bold = true })
+hi("Identifier", { fg = "#DDDAEC" })
+hi("String", { fg = "#4A8A0E" })
+hi("Number", { fg = "#D4B860" })
+hi("Float", { fg = "#D4B860" })
+hi("Boolean", { fg = "#8A72C8", bold = true })
+hi("Constant", { fg = "#C4B0F0" })
+hi("Special", { fg = "#4EB8C8" })
+hi("SpecialChar", { fg = "#4EB8C8" })
+hi("Operator", { fg = "#6E56AF" })
+hi("Delimiter", { fg = "#54487A" })
+hi("Comment", { fg = "#54487A", italic = true })
+hi("Todo", { fg = "#D4B860", bold = true })
+hi("Error", { fg = "#D9534F", bold = true })
+hi("PreProc", { fg = "#73D216" })
+
+-- ═══════════════════════════════════════════════════════════════════════════
+--  DIAGNOSTICS
+-- ═══════════════════════════════════════════════════════════════════════════
+hi("DiagnosticError", { fg = "#D9534F" })
+hi("DiagnosticWarn", { fg = "#C97B30" })
+hi("DiagnosticInfo", { fg = "#6E56AF" })
+hi("DiagnosticHint", { fg = "#61538D" })
+hi("DiagnosticUnnecessary", { fg = "#54487A", italic = true })
+hi("DiagnosticUnderlineError", { undercurl = true, sp = "#D9534F" })
+hi("DiagnosticUnderlineWarn", { undercurl = true, sp = "#C97B30" })
+hi("DiagnosticUnderlineInfo", { undercurl = true, sp = "#6E56AF" })
+hi("DiagnosticUnderlineHint", { undercurl = true, sp = "#61538D" })
+hi("DiagnosticVirtualTextError", { fg = "#D9534F", bg = "#1A0A0A", italic = true })
+hi("DiagnosticVirtualTextWarn", { fg = "#C97B30", bg = "#1A1200", italic = true })
+hi("DiagnosticVirtualTextInfo", { fg = "#6E56AF", bg = "#100E1A", italic = true })
+hi("DiagnosticVirtualTextHint", { fg = "#54487A", bg = "#0E0C16", italic = true })
