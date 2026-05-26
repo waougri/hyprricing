@@ -1,96 +1,107 @@
--- Clone 'mini.nvim' manually in a way that it gets managed by 'mini.deps'
-local path_package = vim.fn.stdpath("data") .. "/site/"
-local mini_path = path_package .. "pack/deps/start/mini.nvim"
-if not vim.loop.fs_stat(mini_path) then
-	vim.cmd('echo "Installing [`mini.nvim`](../doc/mini-nvim.qmd#mini.nvim)" | redraw')
-	local clone_cmd = {
-		"git",
-		"clone",
-		"--filter=blob:none",
-		"https://github.com/nvim-mini/mini.nvim",
-		mini_path,
+require("config.lazy")
+
+function server (server_name, filetypes, settings)
+
+	vim.lsp.config[server_name] = {
+		cmd = { vim.fn.exepath(server_name) },
+		filetypes = filetypes,
+		root_markers = { '.git' },
+		settings = settings
 	}
-	vim.fn.system(clone_cmd)
-	vim.cmd("packadd mini.nvim | helptags ALL")
-	vim.cmd('echo "Installed [`mini.nvim`](../doc/mini-nvim.qmd#mini.nvim)" | redraw')
+	vim.lsp.enable(server_name)
 end
 
--- Set up 'mini.deps' (customize to your liking)
-require("mini.deps").setup({ path = { package = path_package } })
-require("plugins")
+vim.lsp.config["lua_ls"] = {
+	cmd = { vim.fn.exepath("lua-language-server") },
+	root_markers = { ".git", ".nvim.lua" },
+	settings = {
+		Lua = {
+			runtime = {
+				version = 'LuaJIT',
+			},
+			workspace = {
+				library = vim.api.nvim_get_runtime_file("", true),
+				checkThirdParty = false,
+			},
+			diagnostics = {
+				globals = {'vim'},
+			},
+		},
+	},
+}
 
-vim.cmd.colorscheme("gentoo")
-vim.cmd.syntax("on")
-vim.wo.relativenumber = true
-vim.opt_local.shiftwidth = 2
-vim.opt_local.tabstop = 2
-vim.opt_local.expandtab = true
--- Hide the default statusline and use a single global one
-vim.opt.laststatus = 3
-vim.opt.cmdheight = 0
--- Optioddnal: Hide the mode (NORMAL, INSERT, etc.) since mini.statusline shows it
-vim.opt.showmode = false
-vim.g.mapleader = " "
 
--- Enable visual line wrapping (soft wrap)
-vim.opt.wrap = true
--- Wrap at word boundaries rather than in the middle of a word
-vim.opt.linebreak = true
--- Set the character limit for automatic hard wrapping
-vim.opt.textwidth = 80
--- Optional: Ensure auto-formatting is enabled as you type
-vim.opt.formatoptions:append("t")
-vim.opt.formatoptions:append("a")
+server("rust-analyzer", {"rust", "rs"})
+server("clangd", {"cpp", "hpp", "h", "c", "cxx", "hxx", "ixx"})
+server("typescript-language-server", {"ts", "js", "jsx", "tsx"})
 
-vim.keymap.set("n", "<leader>e", function()
-	require("mini.files").open()
-end, { desc = "Open Mini FIles" })
-vim.keymap.set("n", "<C-x>", ":bd<CR>", { desc = "Kill current buffer" })
+vim.lsp.config("roslyn", {
+    on_attach = function()
+        print("This will run when the server attaches!")
+    end,
+    settings = {
+        ["csharp|inlay_hints"] = {
+            csharp_enable_inlay_hints_for_implicit_object_creation = true,
+            csharp_enable_inlay_hints_for_implicit_variable_types = true,
+        },
+        ["csharp|code_lens"] = {
+            dotnet_enable_references_code_lens = true,
+        },
+    },
+})
 
-vim.diagnostic.config({ virtual_text = true })
-vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
--- Optional: Apply to other areas
-vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
-vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
+vim.api.nvim_create_autocmd('LspAttach', {
 
-vim.keymap.set("n", "]d", function()
-	vim.diagnostic.goto_next()
-end, { desc = "Next Diagnostic" })
-vim.keymap.set("n", "[d", function()
-	vim.diagnostic.goto_prev()
-end, { desc = "Prev Diagnostic" })
+	callback = function(ev)
+		local opts = {buffer = ev.buf}
+		vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+		vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+		vim.keymap.set('n', 'K',  vim.lsp.buf.hover, opts)
+		vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+		vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
+		vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+		vim.keymap.set({'n', 'v'}, '<leader>ca', vim.lsp.buf.code_action, opts)
+		vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
 
--- Errors only (skips warnings/hints)
-vim.keymap.set("n", "]e", function()
-	vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
-end, { desc = "Next Error" })
-vim.keymap.set("n", "[e", function()
-	vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
-end, { desc = "Prev Error" })
-
--- Current file
-vim.keymap.set("n", "<leader>fd", function()
-	extra.pickers.diagnostic({ scope = "current" })
-end, { desc = "File Diagnostics" })
-
--- Project-wide
-vim.keymap.set("n", "<leader>fD", function()
-	extra.pickers.diagnostic({ scope = "all" })
-end, { desc = "Project Diagnostics" })
-
-vim.keymap.set("n", "<C-e>", function()
-	vim.diagnostic.open_float()
-end, { desc = "Show Diagnostic" })
-
-vim.keymap.set({ "n", "v" }, "<leader>cf", function()
-	require("conform").format({ async = true, lsp_format = "fallback" })
-end, { desc = "Format buffer" })
-
-vim.api.nvim_create_autocmd("BufWritePre", {
-	pattern = "*",
-	callback = function(args)
-		require("conform").format({ bufnr = args.buf })
+		-- Format current buffer
+		vim.keymap.set('n', '<leader>f', function()
+			vim.lsp.buf.format { async = true }
+		end, opts)
 	end,
 })
 
+
 vim.opt.formatoptions:remove("a")
+vim.cmd.colorscheme("gentoo")
+vim.opt.syntax = "on"
+vim.opt.number = true 
+vim.opt.relativenumber = true
+vim.opt.wrap = true
+vim.opt.linebreak = true
+
+require("oil").setup({
+	view_options  = {
+		show_hidden = true,
+		is_always_hidden = function(name, bufnr)
+			return false
+		end,}
+
+	})
+
+	require('mini.tabline').setup()
+
+	vim.keymap.set("n", "-", function()
+		require("oil").open_float()
+	end, { desc = "Open Oil" })
+
+
+	vim.diagnostic.config({
+  virtual_text = {
+    prefix = '●', -- Or use a different symbol like ''
+    spacing = 4,
+  },
+  signs = true,
+  underline = true,
+  update_in_insert = false, -- Only show when you aren't typing
+  severity_sort = true,
+})
