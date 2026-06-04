@@ -1,7 +1,7 @@
 {
   "autoclose.nvim": { "branch": "main", "commit": "bafd0368716216fa6a7bb2a43ecd889b44efdb46" },
-  "blink.cmp": { "branch": "main", "commit": "b943982a29f100a4d17b3d2d09dc06b5a0d0f398" },
-  "blink.lib": { "branch": "main", "commit": "c09dd66e9ad97e1a7777f3fa5f0504ca2e877231" },
+  "blink.cmp": { "branch": "main", "commit": "d2c4d170ad51e5116da7b19f2426f3b6e318161d" },
+  "blink.lib": { "branch": "main", "commit": "b127d48bf8e9ac9cf41f6e0fbead317503f76558" },
   "conform.nvim": { "branch": "master", "commit": "619363c30309d29ffa631e67c8183f2a72caa373" },
   "friendly-snippets": { "branch": "main", "commit": "6cd7280adead7f586db6fccbd15d2cac7e2188b9" },
   "lazy.nvim": { "branch": "main", "commit": "306a05526ada86a7b30af95c5cc81ffba93fef97" },
